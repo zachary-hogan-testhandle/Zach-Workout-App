@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RP Hypertrophy Volume Planner</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+    header {
+      padding: 16px 24px;
+      background: #020617;
+      border-bottom: 1px solid #1f2937;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: 0.03em;
+    }
+    header span {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    main {
+      padding: 16px 24px 32px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+    .card {
+      background: #020617;
+      border-radius: 12px;
+      border: 1px solid #1f2937;
+      padding: 16px 18px 20px 18px;
+      box-shadow: 0 10px 30px rgba(15,23,42,0.7);
+    }
+    .card h2 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+    }
+    .muted {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+    .controls-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    label {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    select, input[type="number"], input[type="text"] {
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid #1f2937;
+      border-radius: 6px;
+      padding: 4px 6px;
+      font-size: 13px;
+    }
+    select:focus, input:focus {
+      outline: 1px solid #3b82f6;
+      border-color: #3b82f6;
+    }
+    button {
+      border-radius: 6px;
+      border: 1px solid transparent;
+      padding: 5px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      background: #1d4ed8;
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    button.secondary {
+      background: #020617;
+      border-color: #4b5563;
+      color: #e5e7eb;
+    }
+    button.danger {
+      background: #7f1d1d;
+      border-color: #b91c1c;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+    .tabs {
+      display: inline-flex;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid #1f2937;
+      padding: 2px;
+      margin-left: auto;
+    }
+    .tab {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: #9ca3af;
+    }
+    .tab.active {
+      background: #1d4ed8;
+      color: #e5e7eb;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+    th, td {
+      padding: 4px 6px;
+      border-bottom: 1px solid #1f2937;
+      text-align: left;
+    }
+    th {
+      font-weight: 500;
+      color: #9ca3af;
+      background: #020617;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tbody tr:nth-child(even) {
+      background: #020617;
+    }
+    tbody tr:nth-child(odd) {
+      background: #020617;
+    }
+    .set-index-cell {
+      width: 32px;
+      text-align: right;
+      color: #6b7280;
+    }
+    .muscle-cell {
+      width: 120px;
+    }
+    .exercise-cell {
+      min-width: 220px;
+    }
+    .number-cell {
+      width: 70px;
+    }
+    .action-cell {
+      width: 60px;
+      text-align: right;
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid #1f2937;
+    }
+    .pill.ok {
+      background: #064e3b;
+      border-color: #047857;
+      color: #bbf7d0;
+    }
+    .pill.high {
+      background: #7f1d1d;
+      border-color: #b91c1c;
+      color: #fecaca;
+    }
+    .pill.low {
+      background: #312e81;
+      border-color: #4f46e5;
+      color: #e0e7ff;
+    }
+    .volume-table td {
+      padding-top: 3px;
+      padding-bottom: 3px;
+    }
+    .volume-table tbody tr:hover {
+      background: #020617;
+    }
+    .small-note {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 6px;
+    }
+    .code-hint {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 10px;
+      border-top: 1px dashed #1f2937;
+      padding-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>RP Hypertrophy Volume Planner</h1>
+      <span>Backed by your Excel template · Local only · No backend</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- Left: Day editor -->
+    <section class="card">
+      <div class="controls-row">
+        <div>
+          <label for="weekSelect">Week</label><br />
+          <select id="weekSelect">
+            <option value="Week 1">Week 1</option>
+          </select>
+        </div>
+        <div style="margin-left:auto;">
+          <div class="tabs" id="dayTabs"></div>
+        </div>
+      </div>
+      <p class="muted">
+        Edit sets for the selected day. Each row is one set. Changes are saved automatically to your browser.
+      </p>
+
+      <div style="max-height: 360px; overflow: auto; border-radius: 8px; border: 1px solid #1f2937;">
+        <table id="setsTable">
+          <thead>
+            <tr>
+              <th class="set-index-cell">Set</th>
+              <th class="muscle-cell">Muscle</th>
+              <th class="exercise-cell">Exercise</th>
+              <th class="number-cell">Weight</th>
+              <th class="number-cell">Reps</th>
+              <th class="action-cell"></th>
+            </tr>
+          </thead>
+          <tbody id="setsTableBody">
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 10px; display: flex; justify-content: space-between; gap: 8px; align-items: center;">
+        <button id="addSetBtn">+ Add set</button>
+        <span class="small-note">
+          Tip: To tweak the seed program logic, open this file in a code editor and look for <code>seedProgram</code>.
+        </span>
+      </div>
+    </section>
+
+    <!-- Right: Weekly volume summary -->
+    <section class="card">
+      <h2>Weekly Volume (sets per muscle)</h2>
+      <p class="muted">
+        Based on all sets in the selected week, counted like your COUNTIFS in Excel.
+      </p>
+      <div style="max-height: 330px; overflow: auto; border-radius: 8px; border: 1px solid #1f2937;">
+        <table class="volume-table">
+          <thead>
+            <tr>
+              <th>Muscle</th>
+              <th>Ideal</th>
+              <th>Actual</th>
+              <th>Diff</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="volumeTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="code-hint">
+        Dev hint: volume is computed in <code>computeVolumeForWeek</code>.  
+        You can change targets in <code>idealSets</code> or add new muscles and exercises.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /*
+      ==== DATA LIFTED FROM YOUR EXCEL TEMPLATE ====
+      - muscleGroups / idealSets come from the bottom of Excercises sheet
+      - exerciseCatalog comes from the top of Excercises sheet
+      - seedProgram comes from Week 1 sheet (every row as a set)
+    */
+
+    const muscleGroups = [
+      "Chest",
+      "Back",
+      "Triceps",
+      "Biceps",
+      "Shoulders",
+      "Quads",
+      "Glutes",
+      "Hamstrings",
+      "Calves",
+      "Forearms"
+    ];
+
+    const idealSets = {
+      "Chest": 4,
+      "Back": 4,
+      "Triceps": 11,
+      "Biceps": 15,
+      "Shoulders": 15,
+      "Quads": 4,
+      "Glutes": 4,
+      "Hamstrings": 1,
+      "Calves": 4,
+      "Forearms": 9
+    };
+
+    const exerciseCatalog = [
+      { "muscle": "Triceps", "name": "Cable Overhead Triceps Extension (Rope)" },
+      { "muscle": "Triceps", "name": "Cable Triceps Pushdown (Single Arm)" },
+      { "muscle": "Triceps", "name": "Dumbbell Overhead Extension (Two-Arms)" },
+      { "muscle": "Triceps", "name": "Dip (Triceps-Focused)" },
+      { "muscle": "Biceps", "name": "Dumbbell Curl (Incline)" },
+      { "muscle": "Biceps", "name": "Cable Curl (EZ Bar, Wide Grip)" },
+      { "muscle": "Biceps", "name": "Cable Rope Twist Curl" },
+      { "muscle": "Biceps", "name": "Freemotion Curl (Single-Arm)" },
+      { "muscle": "Shoulders", "name": "Cable Leaning Lateral Raise" },
+      { "muscle": "Shoulders", "name": "Cable Single Arm Rear Delt Raise" },
+      { "muscle": "Shoulders", "name": "Dumbbell Lateral Raise" },
+      { "muscle": "Forearms", "name": "Barbell Standing Wrist Curl" },
+      { "muscle": "Glutes", "name": "Deadlift" },
+      { "muscle": "Glutes", "name": "Cable Pull Through" },
+      { "muscle": "Chest", "name": "Bench Press (Wide Grip)" },
+      { "muscle": "Chest", "name": "Dumbbell Flye (Flat)" },
+      { "muscle": "Back", "name": "Pulldown (Straight Arm)" },
+      { "muscle": "Back", "name": "Pullup (Rings)" },
+      { "muscle": "Quads", "name": "Barbell Squat (High Bar)" },
+      { "muscle": "Quads", "name": "Goblet Squat" },
+      { "muscle": "Calves", "name": "Stair Calves (Single Leg)" },
+      { "muscle": "Hamstrings", "name": "Stiff-Legged Dead Lift" }
+    ];
+
+    // Seeded from Week 1 sheet (every row = one set, weights resolved)
+    const seedProgram = {
+      "Week 1": {
+        "Monday": [
+          { "exercise": "Cable Overhead Triceps Extension (Rope)", "muscle": "Triceps", "weight": 40, "reps": 13 },
+          { "exercise": "Cable Overhead Triceps Extension (Rope)", "muscle": "Triceps", "weight": 40, "reps": 13 },
+          { "exercise": "Cable Overhead Triceps Extension (Rope)", "muscle": "Triceps", "weight": 40, "reps": 13 },
+          { "exercise": "Bench Press (Wide Grip)", "muscle": "Chest", "weight": 175, "reps": 11 },
+          { "exercise": "Bench Press (Wide Grip)", "muscle": "Chest", "weight": 175, "reps": 11 },
+          { "exercise": "Pulldown (Straight Arm)", "muscle": "Back", "weight": 50, "reps": 11 },
+          { "exercise": "Pulldown (Straight Arm)", "muscle": "Back", "weight": 50, "reps": 11 },
+          { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 25, "reps": 14 },
+          { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 25, "reps": 14 },
+          { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 25, "reps": 14 },
+          { "exercise": "Cable Leaning Lateral Raise", "muscle": "Shoulders", "weight": 5, "reps": 13 },
+          { "exercise": "Cable Leaning Lateral Raise", "muscle": "Shoulders", "weight": 5, "reps": 13 },
+          { "exercise": "Cable Leaning Lateral Raise", "muscle": "Shoulders", "weight": 5, "reps": 13 },
+          { "exercise": "Barbell Standing Wrist Curl", "muscle": "Forearms", "weight": 45, "reps": 18 },
+          { "exercise": "Barbell Standing Wrist Curl", "muscle": "Forearms", "weight": 45, "reps": 18 },
+          { "exercise": "Barbell Standing Wrist Curl", "muscle": "Forearms", "weight": 45, "reps": 18 }
+        ],
+        "Tuesday": [
+          { "exercise": "Deadlift", "muscle": "Glutes", "weight": 315, "reps": 7 },
+          { "exercise": "Deadlift", "muscle": "Glutes", "weight": 315, "reps": 7 },
+          { "exercise": "Deadlift", "muscle": "Glutes", "weight": 315, "reps": 7 },
+          { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 225, "reps": 11 },
+          { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 225, "reps": 11 },
+          { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13 },
+          { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13 },
+          { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15 },
+          { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15 }
+        ],
+        "Wednesday": [
+          { "exercise": "Cable Triceps Pushdown (Single Arm)", "muscle": "Triceps", "weight": 20, "reps": 13 },
+          { "exercise": "Cable Triceps Pushdown (Single Arm)", "muscle": "Triceps", "weight": 20, "reps": 13 },
+          { "exercise": "Cable Triceps Pushdown (Single Arm)", "muscle": "Triceps", "weight": 20, "reps": 13 },
+          { "exercise": "Dumbbell Flye (Flat)", "muscle": "Chest", "weight": 40, "reps": 13 },
+          { "exercise": "Dumbbell Flye (Flat)", "muscle": "Chest", "weight": 40, "reps": 13 },
+          { "exercise": "Pullup (Rings)", "muscle": "Back", "weight": 0, "reps": 7 },
+          { "exercise": "Pullup (Rings)", "muscle": "Back", "weight": 0, "reps": 7 },
+          { "exercise": "Cable Rope Twist Curl", "muscle": "Biceps", "weight": 20, "reps": 13 },
+          { "exercise": "Cable Rope Twist Curl", "muscle": "Biceps", "weight": 20, "reps": 13 },
+          { "exercise": "Cable Rope Twist Curl", "muscle": "Biceps", "weight": 20, "reps": 13 },
+          { "exercise": "Cable Single Arm Rear Delt Raise", "muscle": "Shoulders", "weight": 5, "reps": 13 },
+          { "exercise": "Cable Single Arm Rear Delt Raise", "muscle": "Shoulders", "weight": 5, "reps": 13 },
+          { "exercise": "Cable Single Arm Rear Delt Raise", "muscle": "Shoulders", "weight": 5, "reps": 13 },
+          { "exercise": "Stiff-Legged Dead Lift", "muscle": "Hamstrings", "weight": 220, "reps": 9 },
+          { "exercise": "Stiff-Legged Dead Lift", "muscle": "Hamstrings", "weight": 220, "reps": 9 },
+          { "exercise": "Stiff-Legged Dead Lift", "muscle": "Hamstrings", "weight": 220, "reps": 9 },
+          { "exercise": "Stiff-Legged Dead Lift", "muscle": "Hamstrings", "weight": 220, "reps": 9 }
+        ],
+        "Thursday": [
+          { "exercise": "Dip (Triceps-Focused)", "muscle": "Triceps", "weight": 0, "reps": 14 },
+          { "exercise": "Dip (Triceps-Focused)", "muscle": "Triceps", "weight": 0, "reps": 14 },
+          { "exercise": "Dip (Triceps-Focused)", "muscle": "Triceps", "weight": 0, "reps": 14 },
+          { "exercise": "Bench Press (Wide Grip)", "muscle": "Chest", "weight": 155, "reps": 13 },
+          { "exercise": "Bench Press (Wide Grip)", "muscle": "Chest", "weight": 155, "reps": 13 },
+          { "exercise": "Pulldown (Straight Arm)", "muscle": "Back", "weight": 40, "reps": 13 },
+          { "exercise": "Pulldown (Straight Arm)", "muscle": "Back", "weight": 40, "reps": 13 },
+          { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 20, "reps": 11 },
+          { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 20, "reps": 11 },
+          { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 20, "reps": 11 },
+          { "exercise": "Cable Leaning Lateral Raise", "muscle": "Shoulders", "weight": 5, "reps": 11 }
+        ],
+        "Friday": [
+          { "exercise": "Dumbbell Overhead Extension (Two-Arms)", "muscle": "Triceps", "weight": 10, "reps": 15 },
+          { "exercise": "Dumbbell Overhead Extension (Two-Arms)", "muscle": "Triceps", "weight": 10, "reps": 15 },
+          { "exercise": "Dumbbell Overhead Extension (Two-Arms)", "muscle": "Triceps", "weight": 10, "reps": 15 },
+          { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 205, "reps": 11 },
+          { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 205, "reps": 11 },
+          { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 205, "reps": 11 },
+          { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13 },
+          { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13 },
+          { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13 },
+          { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15 },
+          { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15 },
+          { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15 },
+          { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11 },
+          { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11 },
+          { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11 },
+          { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11 },
+          { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11 }
+        ]
+      }
+    };
+
+    /*
+      ==== APP STATE AND HELPERS ====
+    */
+
+    const STORAGE_KEY = "rpHypertrophyProgram_v1";
+
+    function loadProgramFromStorage() {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(seedProgram);
+        const parsed = JSON.parse(raw);
+        return parsed;
+      } catch (e) {
+        console.warn("Failed to load program from storage, using seed.", e);
+        return structuredClone(seedProgram);
+      }
+    }
+
+    function saveProgramToStorage(program) {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(program));
+      } catch (e) {
+        console.warn("Failed to save program to storage.", e);
+      }
+    }
+
+    function getExercisesForMuscle(muscle) {
+      return exerciseCatalog.filter(e => e.muscle === muscle);
+    }
+
+    function computeVolumeForWeek(program, weekKey) {
+      const result = {};
+      muscleGroups.forEach(m => { result[m] = 0; });
+      const weekData = program[weekKey] || {};
+      Object.values(weekData).forEach(dayArray => {
+        dayArray.forEach(set => {
+          const m = set.muscle;
+          if (!m) return;
+          if (!(m in result)) result[m] = 0;
+          result[m] += 1;
+        });
+      });
+      return result;
+    }
+
+    /*
+      ==== UI RENDERING ====
+    */
+
+    const weekSelectEl = document.getElementById("weekSelect");
+    const dayTabsEl = document.getElementById("dayTabs");
+    const setsTableBodyEl = document.getElementById("setsTableBody");
+    const volumeTableBodyEl = document.getElementById("volumeTableBody");
+    const addSetBtn = document.getElementById("addSetBtn");
+
+    const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+    let programState = loadProgramFromStorage();
+    let currentWeek = "Week 1";
+    let currentDay = "Monday";
+
+    function ensureWeekDayExists() {
+      if (!programState[currentWeek]) {
+        programState[currentWeek] = {};
+      }
+      DAYS.forEach(day => {
+        if (!programState[currentWeek][day]) {
+          programState[currentWeek][day] = [];
+        }
+      });
+    }
+
+    function renderDayTabs() {
+      dayTabsEl.innerHTML = "";
+      DAYS.forEach(day => {
+        const btn = document.createElement("button");
+        btn.textContent = day.slice(0, 3);
+        btn.className = "tab" + (day === currentDay ? " active" : "");
+        btn.addEventListener("click", () => {
+          currentDay = day;
+          renderDayTabs();
+          renderSetsTable();
+        });
+        dayTabsEl.appendChild(btn);
+      });
+    }
+
+    function renderSetsTable() {
+      ensureWeekDayExists();
+      const sets = programState[currentWeek][currentDay];
+      setsTableBodyEl.innerHTML = "";
+      sets.forEach((set, index) => {
+        const tr = document.createElement("tr");
+
+        // Set index
+        const tdIndex = document.createElement("td");
+        tdIndex.className = "set-index-cell";
+        tdIndex.textContent = index + 1;
+        tr.appendChild(tdIndex);
+
+        // Muscle select
+        const tdMuscle = document.createElement("td");
+        tdMuscle.className = "muscle-cell";
+        const muscleSelect = document.createElement("select");
+        muscleGroups.forEach(m => {
+          const opt = document.createElement("option");
+          opt.value = m;
+          opt.textContent = m;
+          if (set.muscle === m) opt.selected = true;
+          muscleSelect.appendChild(opt);
+        });
+        muscleSelect.addEventListener("change", () => {
+          set.muscle = muscleSelect.value;
+          const exList = getExercisesForMuscle(set.muscle);
+          if (!exList.find(e => e.name === set.exercise)) {
+            set.exercise = exList.length ? exList[0].name : "";
+          }
+          saveProgramToStorage(programState);
+          renderSetsTable();
+          renderVolumeTable();
+        });
+        tdMuscle.appendChild(muscleSelect);
+        tr.appendChild(tdMuscle);
+
+        // Exercise select
+        const tdExercise = document.createElement("td");
+        tdExercise.className = "exercise-cell";
+        const exerciseSelect = document.createElement("select");
+        const options = getExercisesForMuscle(set.muscle);
+        // If empty for some reason, just show the current name
+        if (!options.length && set.exercise) {
+          const opt = document.createElement("option");
+          opt.value = set.exercise;
+          opt.textContent = set.exercise;
+          exerciseSelect.appendChild(opt);
+        } else {
+          options.forEach(ex => {
+            const opt = document.createElement("option");
+            opt.value = ex.name;
+            opt.textContent = ex.name;
+            if (ex.name === set.exercise) opt.selected = true;
+            exerciseSelect.appendChild(opt);
+          });
+        }
+        exerciseSelect.addEventListener("change", () => {
+          set.exercise = exerciseSelect.value;
+          saveProgramToStorage(programState);
+          renderVolumeTable();
+        });
+        tdExercise.appendChild(exerciseSelect);
+        tr.appendChild(tdExercise);
+
+        // Weight input
+        const tdWeight = document.createElement("td");
+        tdWeight.className = "number-cell";
+        const weightInput = document.createElement("input");
+        weightInput.type = "number";
+        weightInput.step = "1";
+        weightInput.value = set.weight ?? "";
+        weightInput.addEventListener("input", () => {
+          const v = weightInput.value;
+          set.weight = v === "" ? null : Number(v);
+          saveProgramToStorage(programState);
+        });
+        tdWeight.appendChild(weightInput);
+        tr.appendChild(tdWeight);
+
+        // Reps input
+        const tdReps = document.createElement("td");
+        tdReps.className = "number-cell";
+        const repsInput = document.createElement("input");
+        repsInput.type = "number";
+        repsInput.step = "1";
+        repsInput.value = set.reps ?? "";
+        repsInput.addEventListener("input", () => {
+          const v = repsInput.value;
+          set.reps = v === "" ? null : Number(v);
+          saveProgramToStorage(programState);
+        });
+        tdReps.appendChild(repsInput);
+        tr.appendChild(tdReps);
+
+        // Delete button
+        const tdAction = document.createElement("td");
+        tdAction.className = "action-cell";
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "✕";
+        delBtn.className = "danger";
+        delBtn.addEventListener("click", () => {
+          programState[currentWeek][currentDay].splice(index, 1);
+          saveProgramToStorage(programState);
+          renderSetsTable();
+          renderVolumeTable();
+        });
+        tdAction.appendChild(delBtn);
+        tr.appendChild(tdAction);
+
+        setsTableBodyEl.appendChild(tr);
+      });
+    }
+
+    function renderVolumeTable() {
+      const volume = computeVolumeForWeek(programState, currentWeek);
+      volumeTableBodyEl.innerHTML = "";
+      muscleGroups.forEach(muscle => {
+        const ideal = idealSets[muscle] ?? 0;
+        const actual = volume[muscle] ?? 0;
+        const diff = actual - ideal;
+
+        const tr = document.createElement("tr");
+
+        const tdMuscle = document.createElement("td");
+        tdMuscle.textContent = muscle;
+        tr.appendChild(tdMuscle);
+
+        const tdIdeal = document.createElement("td");
+        tdIdeal.textContent = ideal;
+        tr.appendChild(tdIdeal);
+
+        const tdActual = document.createElement("td");
+        tdActual.textContent = actual;
+        tr.appendChild(tdActual);
+
+        const tdDiff = document.createElement("td");
+        tdDiff.textContent = diff > 0 ? "+" + diff : diff;
+        tr.appendChild(tdDiff);
+
+        const tdStatus = document.createElement("td");
+        const pill = document.createElement("span");
+        pill.className = "pill";
+        if (actual === ideal) {
+          pill.classList.add("ok");
+          pill.textContent = "On target";
+        } else if (actual > ideal) {
+          pill.classList.add("high");
+          pill.textContent = "High";
+        } else {
+          pill.classList.add("low");
+          pill.textContent = "Low";
+        }
+        tdStatus.appendChild(pill);
+        tr.appendChild(tdStatus);
+
+        volumeTableBodyEl.appendChild(tr);
+      });
+    }
+
+    /*
+      ==== EVENT HANDLERS ====
+    */
+
+    weekSelectEl.addEventListener("change", () => {
+      currentWeek = weekSelectEl.value;
+      ensureWeekDayExists();
+      renderDayTabs();
+      renderSetsTable();
+      renderVolumeTable();
+    });
+
+    addSetBtn.addEventListener("click", () => {
+      ensureWeekDayExists();
+      const sets = programState[currentWeek][currentDay];
+      // Default: use last set's muscle/exercise if exists, else Chest first exercise
+      let muscle = "Chest";
+      let exerciseName = "";
+      if (sets.length) {
+        muscle = sets[sets.length - 1].muscle || muscle;
+        exerciseName = sets[sets.length - 1].exercise || "";
+      } else {
+        const chestList = getExercisesForMuscle(muscle);
+        if (chestList.length) exerciseName = chestList[0].name;
+      }
+      sets.push({
+        muscle,
+        exercise: exerciseName,
+        weight: null,
+        reps: null
+      });
+      saveProgramToStorage(programState);
+      renderSetsTable();
+      renderVolumeTable();
+    });
+
+    /*
+      ==== INITIALIZE ====
+    */
+    ensureWeekDayExists();
+    renderDayTabs();
+    renderSetsTable();
+    renderVolumeTable();
+  </script>
+</body>
+</html>
