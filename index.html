@@ -319,11 +319,12 @@
     #workoutView .small-note {
       margin-top: 4px;
     }
-
+    /* lighter text for workout numbers */
     #workoutView input[type="number"] {
-      color: #d1d5db;
+      color: #9ca3af;
       font-size: 14px;
     }
+
     .workout-table {
       width: auto;
       max-width: 100%;
@@ -333,6 +334,22 @@
       width: auto;
       max-width: 220px;
       white-space: normal;
+    }
+
+    /* Mobile optimization for workout tab */
+    @media (max-width: 600px) {
+      #workoutView .card {
+        max-width: 100%;
+        margin: 8px 0 0 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      #workoutView .controls-row {
+        flex-wrap: wrap;
+      }
+      #workoutView .tabs {
+        margin-left: 0;
+      }
     }
   </style>
 </head>
@@ -485,7 +502,7 @@
           <table class="workout-table">
             <thead>
               <tr>
-                <th class="set-index-cell">Set</th>
+                <!-- Removed Sets column here -->
                 <th class="exercise-cell">Exercise</th>
                 <th class="number-cell">Weight</th>
                 <th class="number-cell">Reps</th>
@@ -496,7 +513,7 @@
         </div>
 
         <p class="small-note">
-          This view is for in-gym logging. Weight and reps start from your plan but can be overridden as you go.
+          This view is for in-gym logging. Weight and reps start from your plan but clear when you tap so you can type new numbers.
         </p>
       </section>
     </div>
@@ -1134,22 +1151,25 @@
       sets.forEach((set, index) => {
         const tr = document.createElement("tr");
 
-        const tdIndex = document.createElement("td");
-        tdIndex.className = "set-index-cell";
-        tdIndex.textContent = index + 1;
-        tr.appendChild(tdIndex);
-
+        // Exercise cell
         const tdExercise = document.createElement("td");
         tdExercise.className = "exercise-cell";
         tdExercise.textContent = set.exercise || "(select in Settings)";
         tr.appendChild(tdExercise);
 
+        // Weight cell - lighter text, clears on first focus, step 5
         const tdWeight = document.createElement("td");
         tdWeight.className = "number-cell";
         const weightInput = document.createElement("input");
+        const originalWeight = set.weight ?? "";
         weightInput.type = "number";
-        weightInput.step = "1";
-        weightInput.value = set.weight ?? "";
+        weightInput.step = "5";
+        weightInput.value = originalWeight;
+        weightInput.addEventListener("focus", () => {
+          if (weightInput.value === String(originalWeight)) {
+            weightInput.value = "";
+          }
+        });
         weightInput.addEventListener("input", () => {
           const v = weightInput.value;
           set.weight = v === "" ? null : Number(v);
@@ -1158,12 +1178,19 @@
         tdWeight.appendChild(weightInput);
         tr.appendChild(tdWeight);
 
+        // Reps cell - lighter text, clears on first focus
         const tdReps = document.createElement("td");
         tdReps.className = "number-cell";
         const repsInput = document.createElement("input");
+        const originalReps = set.reps ?? "";
         repsInput.type = "number";
         repsInput.step = "1";
-        repsInput.value = set.reps ?? "";
+        repsInput.value = originalReps;
+        repsInput.addEventListener("focus", () => {
+          if (repsInput.value === String(originalReps)) {
+            repsInput.value = "";
+          }
+        });
         repsInput.addEventListener("input", () => {
           const v = repsInput.value;
           set.reps = v === "" ? null : Number(v);
