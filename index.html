@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Zach Workout App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * {
       box-sizing: border-box;
@@ -32,7 +33,7 @@
       color: #9ca3af;
     }
     main {
-      padding: 16px 24px 32px 24px;
+      padding: 16px 16px 32px 16px;
       max-width: 1100px;
       margin: 0 auto;
       display: grid;
@@ -42,6 +43,20 @@
     @media (max-width: 900px) {
       main {
         grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 600px) {
+      header {
+        padding: 12px 12px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+      header h1 {
+        font-size: 18px;
+      }
+      main {
+        padding: 12px;
       }
     }
     .card {
@@ -216,13 +231,33 @@
       border-top: 1px dashed #1f2937;
       padding-top: 6px;
     }
+    .day-toggle-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 2px;
+    }
+    .day-toggle-btn {
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      background: #020617;
+      color: #9ca3af;
+      cursor: pointer;
+    }
+    .day-toggle-btn.active {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+      color: #e5e7eb;
+    }
   </style>
 </head>
 <body>
   <header>
     <div>
       <h1>Zach Workout App</h1>
-      <span>Multiple programs, up to 6 weeks, all saved locally</span>
+      <span>Multiple programs, adjustable days, up to 6 weeks, all saved locally</span>
     </div>
   </header>
 
@@ -239,7 +274,18 @@
           <label for="programNameInput">Name</label><br />
           <input id="programNameInput" type="text" />
         </div>
-        <button id="newProgramBtn" class="secondary" style="margin-left:auto;">+ New program</button>
+        <div style="margin-left:auto; display:flex; gap:6px; flex-wrap:wrap;">
+          <button id="newProgramBtn" class="secondary">+ New program</button>
+          <button id="deleteProgramBtn" class="danger">Delete</button>
+        </div>
+      </div>
+
+      <!-- Day selection per program -->
+      <div class="controls-row">
+        <div>
+          <label>Days in this program</label><br />
+          <div id="dayToggleRow" class="day-toggle-row"></div>
+        </div>
       </div>
 
       <!-- Week and day controls -->
@@ -261,7 +307,7 @@
       </div>
 
       <p class="muted">
-        Each program can have up to six weeks. Each row is one set. Changes are saved automatically to your browser.
+        Each program can have custom days and up to six weeks. Each row is one set. Changes are saved automatically to your browser.
       </p>
 
       <div style="max-height: 360px; overflow: auto; border-radius: 8px; border: 1px solid #1f2937;">
@@ -284,7 +330,7 @@
       <div style="margin-top: 10px; display: flex; justify-content: space-between; gap: 8px; align-items: center;">
         <button id="addSetBtn">+ Add set</button>
         <span class="small-note">
-          Tip: To change the default structure, edit <code>initialAppState</code> and <code>seedWeeks</code> inside this file.
+          To change defaults, edit <code>initialAppState</code> and <code>seedWeeks</code> inside this file.
         </span>
       </div>
     </section>
@@ -293,7 +339,7 @@
     <section class="card">
       <h2>Weekly Volume (sets per muscle)</h2>
       <p class="muted">
-        Based on all sets in the selected program and week, counted per muscle like in your spreadsheet.
+        Based on all sets in the selected program and week. Only active days count toward volume.
       </p>
       <div style="max-height: 330px; overflow: auto; border-radius: 8px; border: 1px solid #1f2937;">
         <table class="volume-table">
@@ -312,8 +358,7 @@
 
       <div class="code-hint">
         Dev hint: programs live in <code>appState.programs</code>.  
-        Volume is computed in <code>computeVolumeForWeek</code>.  
-        You can add more muscles, weeks, or progression rules there.
+        Volume is computed in <code>computeVolumeForWeek</code> using the active days for each program.
       </div>
     </section>
   </main>
@@ -328,6 +373,7 @@
           {
             id: "prog-1",
             name: "Default Program",
+            days: ["Monday","Tuesday","Wednesday","Thursday","Friday"],
             weeks: {
               "Week 1": { Monday: [sets], ... },
               ...
@@ -390,6 +436,24 @@
       { "muscle": "Quads", "name": "Goblet Squat" },
       { "muscle": "Calves", "name": "Stair Calves (Single Leg)" },
       { "muscle": "Hamstrings", "name": "Stiff-Legged Dead Lift" }
+    ];
+
+    const ALL_DAYS = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ];
+
+    const DEFAULT_ACTIVE_DAYS = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
     ];
 
     const seedWeek1 = {
@@ -472,15 +536,14 @@
         { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11 },
         { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11 },
         { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11 }
-      ]
+      ],
+      "Saturday": [],
+      "Sunday": []
     };
-
-    const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-    const WEEKS = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"];
 
     function emptyWeek() {
       const w = {};
-      DAYS.forEach(day => {
+      ALL_DAYS.forEach(day => {
         w[day] = [];
       });
       return w;
@@ -501,6 +564,7 @@
         {
           id: "prog-1",
           name: "Default Program",
+          days: DEFAULT_ACTIVE_DAYS.slice(),
           weeks: seedWeeks
         }
       ]
@@ -512,6 +576,15 @@
       return JSON.parse(JSON.stringify(obj));
     }
 
+    function normalizeDays(days) {
+      if (!Array.isArray(days) || !days.length) {
+        return DEFAULT_ACTIVE_DAYS.slice();
+      }
+      const set = new Set(days);
+      const normalized = ALL_DAYS.filter(d => set.has(d));
+      return normalized.length ? normalized : DEFAULT_ACTIVE_DAYS.slice();
+    }
+
     function loadAppState() {
       try {
         const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -520,6 +593,12 @@
         if (!parsed.programs || !parsed.programs.length) {
           return deepClone(initialAppState);
         }
+        parsed.programs.forEach(p => {
+          p.days = normalizeDays(p.days);
+          if (!p.weeks) {
+            p.weeks = deepClone(seedWeeks);
+          }
+        });
         return parsed;
       } catch (e) {
         console.warn("Failed to load app state, using initial.", e);
@@ -550,7 +629,7 @@
       if (!program.weeks[weekKey]) {
         program.weeks[weekKey] = emptyWeek();
       }
-      DAYS.forEach(day => {
+      ALL_DAYS.forEach(day => {
         if (!program.weeks[weekKey][day]) {
           program.weeks[weekKey][day] = [];
         }
@@ -563,8 +642,11 @@
 
       if (!program.weeks || !program.weeks[weekKey]) return result;
 
+      const activeDays = normalizeDays(program.days);
       const weekData = program.weeks[weekKey];
-      Object.values(weekData).forEach(dayArray => {
+
+      activeDays.forEach(day => {
+        const dayArray = weekData[day] || [];
         dayArray.forEach(set => {
           const m = set.muscle;
           if (!m) return;
@@ -572,12 +654,16 @@
           result[m] += 1;
         });
       });
+
       return result;
     }
 
     const programSelectEl = document.getElementById("programSelect");
     const programNameInputEl = document.getElementById("programNameInput");
     const newProgramBtn = document.getElementById("newProgramBtn");
+    const deleteProgramBtn = document.getElementById("deleteProgramBtn");
+
+    const dayToggleRowEl = document.getElementById("dayToggleRow");
 
     const weekSelectEl = document.getElementById("weekSelect");
     const dayTabsEl = document.getElementById("dayTabs");
@@ -602,11 +688,61 @@
       if (program) {
         programNameInputEl.value = program.name || "";
       }
+      renderDayToggles();
+    }
+
+    function renderDayToggles() {
+      const program = getCurrentProgram();
+      if (!program) return;
+      const activeDays = normalizeDays(program.days);
+      program.days = activeDays;
+      dayToggleRowEl.innerHTML = "";
+      ALL_DAYS.forEach(day => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = day.slice(0, 3);
+        btn.className = "day-toggle-btn";
+        if (activeDays.includes(day)) {
+          btn.classList.add("active");
+        }
+        btn.addEventListener("click", () => {
+          const isActive = activeDays.includes(day);
+          if (isActive) {
+            if (activeDays.length === 1) {
+              return;
+            }
+            const idx = activeDays.indexOf(day);
+            activeDays.splice(idx, 1);
+          } else {
+            activeDays.push(day);
+            const order = new Map();
+            ALL_DAYS.forEach((d, i) => order.set(d, i));
+            activeDays.sort((a, b) => order.get(a) - order.get(b));
+          }
+          program.days = activeDays.slice();
+          if (!program.days.includes(currentDay)) {
+            currentDay = program.days[0];
+          }
+          saveAppState();
+          renderDayToggles();
+          renderDayTabs();
+          renderSetsTable();
+          renderVolumeTable();
+        });
+        dayToggleRowEl.appendChild(btn);
+      });
     }
 
     function renderDayTabs() {
+      const program = getCurrentProgram();
+      if (!program) return;
+      const activeDays = normalizeDays(program.days);
+      program.days = activeDays;
+      if (!activeDays.includes(currentDay)) {
+        currentDay = activeDays[0];
+      }
       dayTabsEl.innerHTML = "";
-      DAYS.forEach(day => {
+      activeDays.forEach(day => {
         const btn = document.createElement("button");
         btn.textContent = day.slice(0, 3);
         btn.className = "tab" + (day === currentDay ? " active" : "");
@@ -781,8 +917,12 @@
       const program = getCurrentProgram();
       if (program) {
         if (!program.weeks) {
-          program.weeks = {};
+          program.weeks = deepClone(seedWeeks);
         }
+      }
+      const activeDays = normalizeDays(getCurrentProgram().days);
+      if (!activeDays.includes(currentDay)) {
+        currentDay = activeDays[0];
       }
       renderProgramSelect();
       renderDayTabs();
@@ -808,10 +948,32 @@
       const newProgram = {
         id: newId,
         name: (baseProgram?.name || "Program") + " copy",
+        days: baseProgram?.days ? baseProgram.days.slice() : DEFAULT_ACTIVE_DAYS.slice(),
         weeks: cloneWeeks
       };
       appState.programs.push(newProgram);
       appState.currentProgramId = newId;
+      currentWeek = "Week 1";
+      currentDay = normalizeDays(newProgram.days)[0];
+      saveAppState();
+      renderProgramSelect();
+      renderDayTabs();
+      renderSetsTable();
+      renderVolumeTable();
+    });
+
+    deleteProgramBtn.addEventListener("click", () => {
+      const program = getCurrentProgram();
+      if (!program) return;
+      const ok = window.confirm(`Delete program "${program.name}"? This cannot be undone.`);
+      if (!ok) return;
+
+      if (appState.programs.length === 1) {
+        appState = deepClone(initialAppState);
+      } else {
+        appState.programs = appState.programs.filter(p => p.id !== program.id);
+        appState.currentProgramId = appState.programs[0].id;
+      }
       currentWeek = "Week 1";
       currentDay = "Monday";
       saveAppState();
@@ -862,6 +1024,10 @@
         appState = deepClone(initialAppState);
       } else {
         ensureWeekAndDaysExist(program, currentWeek);
+        program.days = normalizeDays(program.days);
+        if (!program.days.includes(currentDay)) {
+          currentDay = program.days[0];
+        }
       }
       renderProgramSelect();
       renderDayTabs();
