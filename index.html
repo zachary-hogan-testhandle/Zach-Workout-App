@@ -123,7 +123,7 @@
       border-color: #3b82f6;
     }
     input[type="text"] {
-      min-width: 160px;
+      min-width: 140px;
     }
     button {
       border-radius: 6px;
@@ -160,7 +160,7 @@
     }
     .tab {
       font-size: 12px;
-      padding: 4px 10px;
+      padding: 4px 8px;
       border-radius: 999px;
       cursor: pointer;
       border: none;
@@ -176,9 +176,10 @@
       border-collapse: collapse;
       margin-top: 8px;
       font-size: 12px;
+      table-layout: auto;
     }
     th, td {
-      padding: 4px 6px;
+      padding: 4px 4px;
       border-bottom: 1px solid #1f2937;
       text-align: left;
     }
@@ -196,24 +197,34 @@
     tbody tr:nth-child(odd) {
       background: #020617;
     }
+
     .set-index-cell {
       width: 32px;
       text-align: right;
       color: #6b7280;
+      white-space: nowrap;
     }
     .muscle-cell {
-      width: 120px;
+      width: 90px;
+      white-space: nowrap;
     }
     .exercise-cell {
-      min-width: 220px;
+      width: 100%;
     }
     .number-cell {
-      width: 70px;
+      width: 60px;
+      white-space: nowrap;
     }
     .action-cell {
-      width: 60px;
+      width: 40px;
       text-align: right;
+      white-space: nowrap;
     }
+
+    table input[type="number"] {
+      width: 60px;
+    }
+
     .pill {
       display: inline-block;
       padding: 2px 6px;
@@ -291,7 +302,7 @@
       font-size: 14px;
     }
     .workout-table .exercise-cell {
-      min-width: 160px;
+      width: auto;
     }
   </style>
 </head>
@@ -406,7 +417,7 @@
         </div>
 
         <div class="code-hint">
-          Dev hint: programs live in <code>appState.programs</code>.  
+          Dev hint: programs live in <code>appState.programs</code>.<br/>
           Volume is computed in <code>computeVolumeForWeek</code> using the active days for each program.
         </div>
       </section>
@@ -416,6 +427,28 @@
     <div id="workoutView" style="display:none;">
       <section class="card">
         <h2>Workout</h2>
+
+        <div class="controls-row">
+          <div>
+            <label for="programSelectWorkout">Program</label><br />
+            <select id="programSelectWorkout"></select>
+          </div>
+          <div>
+            <label for="weekSelectWorkout">Week</label><br />
+            <select id="weekSelectWorkout">
+              <option value="Week 1">Week 1</option>
+              <option value="Week 2">Week 2</option>
+              <option value="Week 3">Week 3</option>
+              <option value="Week 4">Week 4</option>
+              <option value="Week 5">Week 5</option>
+              <option value="Week 6">Week 6</option>
+            </select>
+          </div>
+          <div style="margin-left:auto;">
+            <div class="tabs" id="dayTabsWorkout"></div>
+          </div>
+        </div>
+
         <div id="workoutContext"></div>
 
         <div style="max-height: 420px; overflow: auto; border-radius: 8px; border: 1px solid #1f2937;">
@@ -756,6 +789,10 @@
     const workoutTableBodyEl = document.getElementById("workoutTableBody");
     const workoutContextEl = document.getElementById("workoutContext");
 
+    const programSelectWorkoutEl = document.getElementById("programSelectWorkout");
+    const weekSelectWorkoutEl = document.getElementById("weekSelectWorkout");
+    const dayTabsWorkoutEl = document.getElementById("dayTabsWorkout");
+
     let appState = loadAppState();
     let currentWeek = "Week 1";
     let currentDay = "Monday";
@@ -780,15 +817,28 @@
     settingsTabBtn.addEventListener("click", () => setView("settings"));
     workoutTabBtn.addEventListener("click", () => setView("workout"));
 
+    // Helpers
+    function renderWeekSelects() {
+      weekSelectEl.value = currentWeek;
+      weekSelectWorkoutEl.value = currentWeek;
+    }
+
     // Rendering helpers
     function renderProgramSelect() {
       programSelectEl.innerHTML = "";
+      programSelectWorkoutEl.innerHTML = "";
       appState.programs.forEach(p => {
-        const opt = document.createElement("option");
-        opt.value = p.id;
-        opt.textContent = p.name || "Unnamed program";
-        if (p.id === appState.currentProgramId) opt.selected = true;
-        programSelectEl.appendChild(opt);
+        const opt1 = document.createElement("option");
+        opt1.value = p.id;
+        opt1.textContent = p.name || "Unnamed program";
+        if (p.id === appState.currentProgramId) opt1.selected = true;
+        programSelectEl.appendChild(opt1);
+
+        const opt2 = document.createElement("option");
+        opt2.value = p.id;
+        opt2.textContent = p.name || "Unnamed program";
+        if (p.id === appState.currentProgramId) opt2.selected = true;
+        programSelectWorkoutEl.appendChild(opt2);
       });
       const program = getCurrentProgram();
       if (program) {
@@ -851,18 +901,23 @@
         currentDay = activeDays[0];
       }
       dayTabsEl.innerHTML = "";
+      dayTabsWorkoutEl.innerHTML = "";
       activeDays.forEach(day => {
-        const btn = document.createElement("button");
-        btn.textContent = day.slice(0, 3);
-        btn.className = "tab" + (day === currentDay ? " active" : "");
-        btn.addEventListener("click", () => {
-          currentDay = day;
-          renderDayTabs();
-          renderSetsTable();
-          renderWorkoutContext();
-          renderWorkoutTable();
-        });
-        dayTabsEl.appendChild(btn);
+        const makeBtn = (container) => {
+          const btn = document.createElement("button");
+          btn.textContent = day.slice(0, 3);
+          btn.className = "tab" + (day === currentDay ? " active" : "");
+          btn.addEventListener("click", () => {
+            currentDay = day;
+            renderDayTabs();
+            renderSetsTable();
+            renderWorkoutContext();
+            renderWorkoutTable();
+          });
+          container.appendChild(btn);
+        };
+        makeBtn(dayTabsEl);
+        makeBtn(dayTabsWorkoutEl);
       });
     }
 
@@ -1091,26 +1146,48 @@
       });
     }
 
-    // Event wiring for settings controls
-    programSelectEl.addEventListener("change", () => {
-      appState.currentProgramId = programSelectEl.value;
+    // Shared handlers
+    function handleProgramChange(newId) {
+      appState.currentProgramId = newId;
       saveAppState();
       const program = getCurrentProgram();
-      if (program) {
-        if (!program.weeks) {
-          program.weeks = deepClone(seedWeeks);
-        }
+      if (program && !program.weeks) {
+        program.weeks = deepClone(seedWeeks);
       }
       const activeDays = normalizeDays(getCurrentProgram().days);
       if (!activeDays.includes(currentDay)) {
         currentDay = activeDays[0];
       }
       renderProgramSelect();
+      renderWeekSelects();
       renderDayTabs();
       renderSetsTable();
       renderVolumeTable();
       renderWorkoutContext();
       renderWorkoutTable();
+    }
+
+    function handleWeekChange(newWeek) {
+      currentWeek = newWeek;
+      const program = getCurrentProgram();
+      if (program) {
+        ensureWeekAndDaysExist(program, currentWeek);
+      }
+      saveAppState();
+      renderWeekSelects();
+      renderSetsTable();
+      renderVolumeTable();
+      renderWorkoutContext();
+      renderWorkoutTable();
+    }
+
+    // Event wiring for settings controls
+    programSelectEl.addEventListener("change", () => {
+      handleProgramChange(programSelectEl.value);
+    });
+
+    programSelectWorkoutEl.addEventListener("change", () => {
+      handleProgramChange(programSelectWorkoutEl.value);
     });
 
     programNameInputEl.addEventListener("input", () => {
@@ -1136,16 +1213,10 @@
         weeks: cloneWeeks
       };
       appState.programs.push(newProgram);
-      appState.currentProgramId = newId;
+      handleProgramChange(newId);
       currentWeek = "Week 1";
       currentDay = normalizeDays(newProgram.days)[0];
-      saveAppState();
-      renderProgramSelect();
-      renderDayTabs();
-      renderSetsTable();
-      renderVolumeTable();
-      renderWorkoutContext();
-      renderWorkoutTable();
+      renderWeekSelects();
     });
 
     deleteProgramBtn.addEventListener("click", () => {
@@ -1164,6 +1235,7 @@
       currentDay = "Monday";
       saveAppState();
       renderProgramSelect();
+      renderWeekSelects();
       renderDayTabs();
       renderSetsTable();
       renderVolumeTable();
@@ -1172,16 +1244,11 @@
     });
 
     weekSelectEl.addEventListener("change", () => {
-      currentWeek = weekSelectEl.value;
-      const program = getCurrentProgram();
-      if (program) {
-        ensureWeekAndDaysExist(program, currentWeek);
-      }
-      saveAppState();
-      renderSetsTable();
-      renderVolumeTable();
-      renderWorkoutContext();
-      renderWorkoutTable();
+      handleWeekChange(weekSelectEl.value);
+    });
+
+    weekSelectWorkoutEl.addEventListener("change", () => {
+      handleWeekChange(weekSelectWorkoutEl.value);
     });
 
     addSetBtn.addEventListener("click", () => {
@@ -1221,6 +1288,7 @@
         }
       }
       renderProgramSelect();
+      renderWeekSelects();
       renderDayTabs();
       renderSetsTable();
       renderVolumeTable();
