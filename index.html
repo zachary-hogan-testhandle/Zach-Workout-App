@@ -335,6 +335,18 @@
       width: 17%;
     }
 
+    /* Completed set styling in workout table */
+    .workout-table tr.set-completed {
+      background: #111827;
+    }
+    .workout-table tr.set-completed .exercise-cell {
+      color: #9ca3af;
+      text-decoration: line-through;
+    }
+    .workout-table tr.set-completed input[type="number"] {
+      opacity: 0.75;
+    }
+
     @media (max-width: 600px) {
       #workoutView .card {
         max-width: 100%;
@@ -504,7 +516,7 @@
         </div>
 
         <p class="small-note">
-          This view is for in-gym logging. Weight and reps start from your plan and can be adjusted on the fly.
+          This view is for in-gym logging. Weight and reps start from your plan and can be adjusted on the fly. Tap a row to mark a set complete.
         </p>
       </section>
     </div>
@@ -1213,6 +1225,11 @@
       sets.forEach((set) => {
         const tr = document.createElement("tr");
 
+        // Ensure completed flag exists
+        if (set.completed) {
+          tr.classList.add("set-completed");
+        }
+
         const tdExercise = document.createElement("td");
         tdExercise.className = "exercise-cell";
         tdExercise.textContent = set.exercise || "(select in Settings)";
@@ -1253,6 +1270,21 @@
         });
         tdReps.appendChild(repsInput);
         tr.appendChild(tdReps);
+
+        // Tap-to-complete behavior: ignore clicks on inputs/buttons
+        tr.addEventListener("click", (e) => {
+          const tag = e.target.tagName;
+          if (tag === "INPUT" || tag === "SELECT" || tag === "BUTTON") {
+            return;
+          }
+          set.completed = !set.completed;
+          if (set.completed) {
+            tr.classList.add("set-completed");
+          } else {
+            tr.classList.remove("set-completed");
+          }
+          saveAppState();
+        });
 
         workoutTableBodyEl.appendChild(tr);
       });
@@ -1378,7 +1410,8 @@
         muscle,
         exercise: exerciseName,
         weight: null,
-        reps: null
+        reps: null,
+        completed: false
       });
       saveAppState();
       renderSetsTable();
