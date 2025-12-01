@@ -222,8 +222,10 @@
       white-space: nowrap;
     }
 
+    /* Lighter text for numeric inputs in tables */
     table input[type="number"] {
       width: 60px;
+      color: #9ca3af;
     }
 
     .pill {
@@ -318,11 +320,6 @@
     }
     #workoutView .small-note {
       margin-top: 4px;
-    }
-    /* lighter text for workout numbers */
-    #workoutView input[type="number"] {
-      color: #9ca3af;
-      font-size: 14px;
     }
 
     .workout-table {
@@ -814,6 +811,27 @@
       return result;
     }
 
+    // helper: clear on first typing (but not on arrow up/down)
+    function attachClearOnType(input) {
+      input.dataset.cleared = "false";
+      input.addEventListener("keydown", (e) => {
+        if (input.dataset.cleared === "true") return;
+        if (
+          e.key === "ArrowUp" ||
+          e.key === "ArrowDown" ||
+          e.key === "Tab" ||
+          e.key === "Shift" ||
+          e.key === "Control" ||
+          e.key === "Alt" ||
+          e.key === "Meta"
+        ) {
+          return;
+        }
+        input.value = "";
+        input.dataset.cleared = "true";
+      });
+    }
+
     // DOM references - common
     const settingsTabBtn = document.getElementById("settingsTabBtn");
     const workoutTabBtn = document.getElementById("workoutTabBtn");
@@ -1037,9 +1055,11 @@
         tdWeight.className = "number-cell";
         const weightInput = document.createElement("input");
         weightInput.type = "number";
-        weightInput.step = "1"; // fine control in settings
-        weightInput.value = set.weight ?? "";
-        weightInput.placeholder = set.weight ?? "";
+        weightInput.step = "5"; // step 5 in settings too
+        const wVal = set.weight ?? "";
+        weightInput.value = wVal;
+        weightInput.placeholder = wVal;
+        attachClearOnType(weightInput);
         weightInput.addEventListener("input", () => {
           const v = weightInput.value;
           set.weight = v === "" ? null : Number(v);
@@ -1055,8 +1075,10 @@
         const repsInput = document.createElement("input");
         repsInput.type = "number";
         repsInput.step = "1";
-        repsInput.value = set.reps ?? "";
-        repsInput.placeholder = set.reps ?? "";
+        const rVal = set.reps ?? "";
+        repsInput.value = rVal;
+        repsInput.placeholder = rVal;
+        attachClearOnType(repsInput);
         repsInput.addEventListener("input", () => {
           const v = repsInput.value;
           set.reps = v === "" ? null : Number(v);
@@ -1152,7 +1174,7 @@
       const sets = program.weeks[currentWeek][currentDay];
 
       workoutTableBodyEl.innerHTML = "";
-      sets.forEach((set, index) => {
+      sets.forEach((set) => {
         const tr = document.createElement("tr");
 
         // Exercise cell
@@ -1161,7 +1183,7 @@
         tdExercise.textContent = set.exercise || "(select in Settings)";
         tr.appendChild(tdExercise);
 
-        // Weight cell - step 5, starts from current number
+        // Weight cell - step 5, lighter text, clear on typing
         const tdWeight = document.createElement("td");
         tdWeight.className = "number-cell";
         const weightInput = document.createElement("input");
@@ -1170,6 +1192,7 @@
         weightInput.step = "5";
         weightInput.value = weightVal;
         weightInput.placeholder = weightVal;
+        attachClearOnType(weightInput);
         weightInput.addEventListener("input", () => {
           const v = weightInput.value;
           set.weight = v === "" ? null : Number(v);
@@ -1178,7 +1201,7 @@
         tdWeight.appendChild(weightInput);
         tr.appendChild(tdWeight);
 
-        // Reps cell - step 1
+        // Reps cell - step 1, lighter text, clear on typing
         const tdReps = document.createElement("td");
         tdReps.className = "number-cell";
         const repsInput = document.createElement("input");
@@ -1187,6 +1210,7 @@
         repsInput.step = "1";
         repsInput.value = repsVal;
         repsInput.placeholder = repsVal;
+        attachClearOnType(repsInput);
         repsInput.addEventListener("input", () => {
           const v = repsInput.value;
           set.reps = v === "" ? null : Number(v);
