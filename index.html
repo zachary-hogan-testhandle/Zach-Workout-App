@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>RP Hypertrophy Volume Planner</title>
+  <title>Zach Workout App</title>
   <style>
     * {
       box-sizing: border-box;
@@ -221,7 +221,7 @@
 <body>
   <header>
     <div>
-      <h1>RP Hypertrophy Volume Planner</h1>
+      <h1>Zach Workout App</h1>
       <span>Multiple programs, up to 6 weeks, all saved locally</span>
     </div>
   </header>
@@ -293,7 +293,7 @@
     <section class="card">
       <h2>Weekly Volume (sets per muscle)</h2>
       <p class="muted">
-        Based on all sets in the selected program and week, counted per muscle like your Excel COUNTIFS.
+        Based on all sets in the selected program and week, counted per muscle like in your spreadsheet.
       </p>
       <div style="max-height: 330px; overflow: auto; border-radius: 8px; border: 1px solid #1f2937;">
         <table class="volume-table">
@@ -478,7 +478,6 @@
     const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
     const WEEKS = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"];
 
-    // Build empty week template
     function emptyWeek() {
       const w = {};
       DAYS.forEach(day => {
@@ -507,7 +506,7 @@
       ]
     };
 
-    const STORAGE_KEY = "rpHypertrophyPrograms_v2";
+    const STORAGE_KEY = "zachWorkoutPrograms_v1";
 
     function deepClone(obj) {
       return JSON.parse(JSON.stringify(obj));
