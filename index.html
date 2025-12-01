@@ -32,19 +32,6 @@
       font-size: 12px;
       color: #9ca3af;
     }
-    main {
-      padding: 16px 16px 32px 16px;
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 3fr 2fr;
-      gap: 24px;
-    }
-    @media (max-width: 900px) {
-      main {
-        grid-template-columns: 1fr;
-      }
-    }
     @media (max-width: 600px) {
       header {
         padding: 12px 12px;
@@ -55,10 +42,47 @@
       header h1 {
         font-size: 18px;
       }
-      main {
-        padding: 12px;
+    }
+
+    .top-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 8px 16px 0 16px;
+      border-bottom: 1px solid #1f2937;
+      background: #020617;
+    }
+    .top-tab {
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #9ca3af;
+      cursor: pointer;
+    }
+    .top-tab.active {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+      color: #e5e7eb;
+    }
+
+    main {
+      padding: 16px 16px 32px 16px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .view-settings {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .view-settings {
+        grid-template-columns: 1fr;
       }
     }
+
     .card {
       background: #020617;
       border-radius: 12px;
@@ -251,6 +275,24 @@
       border-color: #1d4ed8;
       color: #e5e7eb;
     }
+
+    /* Workout view tweaks */
+    #workoutView .card {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    #workoutContext {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+    #workoutView input[type="number"] {
+      color: #d1d5db;
+      font-size: 14px;
+    }
+    .workout-table .exercise-cell {
+      min-width: 160px;
+    }
   </style>
 </head>
 <body>
@@ -261,106 +303,140 @@
     </div>
   </header>
 
+  <nav class="top-tabs">
+    <button id="settingsTabBtn" class="top-tab active">Settings</button>
+    <button id="workoutTabBtn" class="top-tab">Workout</button>
+  </nav>
+
   <main>
-    <!-- Left: Program and day editor -->
-    <section class="card">
-      <!-- Program controls -->
-      <div class="controls-row">
-        <div>
-          <label for="programSelect">Program</label><br />
-          <select id="programSelect"></select>
+    <!-- SETTINGS VIEW -->
+    <div id="settingsView" class="view-settings">
+      <!-- Left: Program and day editor -->
+      <section class="card">
+        <!-- Program controls -->
+        <div class="controls-row">
+          <div>
+            <label for="programSelect">Program</label><br />
+            <select id="programSelect"></select>
+          </div>
+          <div>
+            <label for="programNameInput">Name</label><br />
+            <input id="programNameInput" type="text" />
+          </div>
+          <div style="margin-left:auto; display:flex; gap:6px; flex-wrap:wrap;">
+            <button id="newProgramBtn" class="secondary">+ New program</button>
+            <button id="deleteProgramBtn" class="danger">Delete</button>
+          </div>
         </div>
-        <div>
-          <label for="programNameInput">Name</label><br />
-          <input id="programNameInput" type="text" />
+
+        <!-- Day selection per program -->
+        <div class="controls-row">
+          <div>
+            <label>Days in this program</label><br />
+            <div id="dayToggleRow" class="day-toggle-row"></div>
+          </div>
         </div>
-        <div style="margin-left:auto; display:flex; gap:6px; flex-wrap:wrap;">
-          <button id="newProgramBtn" class="secondary">+ New program</button>
-          <button id="deleteProgramBtn" class="danger">Delete</button>
+
+        <!-- Week and day controls -->
+        <div class="controls-row">
+          <div>
+            <label for="weekSelect">Week</label><br />
+            <select id="weekSelect">
+              <option value="Week 1">Week 1</option>
+              <option value="Week 2">Week 2</option>
+              <option value="Week 3">Week 3</option>
+              <option value="Week 4">Week 4</option>
+              <option value="Week 5">Week 5</option>
+              <option value="Week 6">Week 6</option>
+            </select>
+          </div>
+          <div style="margin-left:auto;">
+            <div class="tabs" id="dayTabs"></div>
+          </div>
         </div>
-      </div>
 
-      <!-- Day selection per program -->
-      <div class="controls-row">
-        <div>
-          <label>Days in this program</label><br />
-          <div id="dayToggleRow" class="day-toggle-row"></div>
+        <p class="muted">
+          Each program can have custom days and up to six weeks. Each row is one set. Changes are saved automatically to your browser.
+        </p>
+
+        <div style="max-height: 360px; overflow: auto; border-radius: 8px; border: 1px solid #1f2937;">
+          <table id="setsTable">
+            <thead>
+              <tr>
+                <th class="set-index-cell">Set</th>
+                <th class="muscle-cell">Muscle</th>
+                <th class="exercise-cell">Exercise</th>
+                <th class="number-cell">Weight</th>
+                <th class="number-cell">Reps</th>
+                <th class="action-cell"></th>
+              </tr>
+            </thead>
+            <tbody id="setsTableBody">
+            </tbody>
+          </table>
         </div>
-      </div>
 
-      <!-- Week and day controls -->
-      <div class="controls-row">
-        <div>
-          <label for="weekSelect">Week</label><br />
-          <select id="weekSelect">
-            <option value="Week 1">Week 1</option>
-            <option value="Week 2">Week 2</option>
-            <option value="Week 3">Week 3</option>
-            <option value="Week 4">Week 4</option>
-            <option value="Week 5">Week 5</option>
-            <option value="Week 6">Week 6</option>
-          </select>
+        <div style="margin-top: 10px; display: flex; justify-content: space-between; gap: 8px; align-items: center;">
+          <button id="addSetBtn">+ Add set</button>
+          <span class="small-note">
+            To change defaults, edit <code>initialAppState</code> and <code>seedWeeks</code> inside this file.
+          </span>
         </div>
-        <div style="margin-left:auto;">
-          <div class="tabs" id="dayTabs"></div>
+      </section>
+
+      <!-- Right: Weekly volume summary -->
+      <section class="card">
+        <h2>Weekly Volume (sets per muscle)</h2>
+        <p class="muted">
+          Based on all sets in the selected program and week. Only active days count toward volume.
+        </p>
+        <div style="max-height: 330px; overflow: auto; border-radius: 8px; border: 1px solid #1f2937;">
+          <table class="volume-table">
+            <thead>
+              <tr>
+                <th>Muscle</th>
+                <th>Ideal</th>
+                <th>Actual</th>
+                <th>Diff</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="volumeTableBody"></tbody>
+          </table>
         </div>
-      </div>
 
-      <p class="muted">
-        Each program can have custom days and up to six weeks. Each row is one set. Changes are saved automatically to your browser.
-      </p>
+        <div class="code-hint">
+          Dev hint: programs live in <code>appState.programs</code>.  
+          Volume is computed in <code>computeVolumeForWeek</code> using the active days for each program.
+        </div>
+      </section>
+    </div>
 
-      <div style="max-height: 360px; overflow: auto; border-radius: 8px; border: 1px solid #1f2937;">
-        <table id="setsTable">
-          <thead>
-            <tr>
-              <th class="set-index-cell">Set</th>
-              <th class="muscle-cell">Muscle</th>
-              <th class="exercise-cell">Exercise</th>
-              <th class="number-cell">Weight</th>
-              <th class="number-cell">Reps</th>
-              <th class="action-cell"></th>
-            </tr>
-          </thead>
-          <tbody id="setsTableBody">
-          </tbody>
-        </table>
-      </div>
+    <!-- WORKOUT VIEW -->
+    <div id="workoutView" style="display:none;">
+      <section class="card">
+        <h2>Workout</h2>
+        <div id="workoutContext"></div>
 
-      <div style="margin-top: 10px; display: flex; justify-content: space-between; gap: 8px; align-items: center;">
-        <button id="addSetBtn">+ Add set</button>
-        <span class="small-note">
-          To change defaults, edit <code>initialAppState</code> and <code>seedWeeks</code> inside this file.
-        </span>
-      </div>
-    </section>
+        <div style="max-height: 420px; overflow: auto; border-radius: 8px; border: 1px solid #1f2937;">
+          <table class="workout-table">
+            <thead>
+              <tr>
+                <th class="set-index-cell">Set</th>
+                <th class="exercise-cell">Exercise</th>
+                <th class="number-cell">Weight</th>
+                <th class="number-cell">Reps</th>
+              </tr>
+            </thead>
+            <tbody id="workoutTableBody"></tbody>
+          </table>
+        </div>
 
-    <!-- Right: Weekly volume summary -->
-    <section class="card">
-      <h2>Weekly Volume (sets per muscle)</h2>
-      <p class="muted">
-        Based on all sets in the selected program and week. Only active days count toward volume.
-      </p>
-      <div style="max-height: 330px; overflow: auto; border-radius: 8px; border: 1px solid #1f2937;">
-        <table class="volume-table">
-          <thead>
-            <tr>
-              <th>Muscle</th>
-              <th>Ideal</th>
-              <th>Actual</th>
-              <th>Diff</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="volumeTableBody"></tbody>
-        </table>
-      </div>
-
-      <div class="code-hint">
-        Dev hint: programs live in <code>appState.programs</code>.  
-        Volume is computed in <code>computeVolumeForWeek</code> using the active days for each program.
-      </div>
-    </section>
+        <p class="small-note">
+          This view is for in-gym logging. Weight and reps start from your plan but can be overridden as you go.
+        </p>
+      </section>
+    </div>
   </main>
 
   <script>
@@ -658,6 +734,12 @@
       return result;
     }
 
+    // DOM references - common
+    const settingsTabBtn = document.getElementById("settingsTabBtn");
+    const workoutTabBtn = document.getElementById("workoutTabBtn");
+    const settingsViewEl = document.getElementById("settingsView");
+    const workoutViewEl = document.getElementById("workoutView");
+
     const programSelectEl = document.getElementById("programSelect");
     const programNameInputEl = document.getElementById("programNameInput");
     const newProgramBtn = document.getElementById("newProgramBtn");
@@ -671,10 +753,34 @@
     const volumeTableBodyEl = document.getElementById("volumeTableBody");
     const addSetBtn = document.getElementById("addSetBtn");
 
+    const workoutTableBodyEl = document.getElementById("workoutTableBody");
+    const workoutContextEl = document.getElementById("workoutContext");
+
     let appState = loadAppState();
     let currentWeek = "Week 1";
     let currentDay = "Monday";
+    let currentView = "settings";
 
+    // View switching
+    function setView(view) {
+      currentView = view;
+      if (view === "settings") {
+        settingsViewEl.style.display = "grid";
+        workoutViewEl.style.display = "none";
+        settingsTabBtn.classList.add("active");
+        workoutTabBtn.classList.remove("active");
+      } else {
+        settingsViewEl.style.display = "none";
+        workoutViewEl.style.display = "block";
+        settingsTabBtn.classList.remove("active");
+        workoutTabBtn.classList.add("active");
+      }
+    }
+
+    settingsTabBtn.addEventListener("click", () => setView("settings"));
+    workoutTabBtn.addEventListener("click", () => setView("workout"));
+
+    // Rendering helpers
     function renderProgramSelect() {
       programSelectEl.innerHTML = "";
       appState.programs.forEach(p => {
@@ -689,6 +795,7 @@
         programNameInputEl.value = program.name || "";
       }
       renderDayToggles();
+      renderWorkoutContext();
     }
 
     function renderDayToggles() {
@@ -728,6 +835,8 @@
           renderDayTabs();
           renderSetsTable();
           renderVolumeTable();
+          renderWorkoutContext();
+          renderWorkoutTable();
         });
         dayToggleRowEl.appendChild(btn);
       });
@@ -750,6 +859,8 @@
           currentDay = day;
           renderDayTabs();
           renderSetsTable();
+          renderWorkoutContext();
+          renderWorkoutTable();
         });
         dayTabsEl.appendChild(btn);
       });
@@ -788,6 +899,7 @@
           saveAppState();
           renderSetsTable();
           renderVolumeTable();
+          renderWorkoutTable();
         });
         tdMuscle.appendChild(muscleSelect);
         tr.appendChild(tdMuscle);
@@ -814,6 +926,7 @@
           set.exercise = exerciseSelect.value;
           saveAppState();
           renderVolumeTable();
+          renderWorkoutTable();
         });
         tdExercise.appendChild(exerciseSelect);
         tr.appendChild(tdExercise);
@@ -828,6 +941,7 @@
           const v = weightInput.value;
           set.weight = v === "" ? null : Number(v);
           saveAppState();
+          renderWorkoutTable();
         });
         tdWeight.appendChild(weightInput);
         tr.appendChild(tdWeight);
@@ -842,6 +956,7 @@
           const v = repsInput.value;
           set.reps = v === "" ? null : Number(v);
           saveAppState();
+          renderWorkoutTable();
         });
         tdReps.appendChild(repsInput);
         tr.appendChild(tdReps);
@@ -856,6 +971,7 @@
           saveAppState();
           renderSetsTable();
           renderVolumeTable();
+          renderWorkoutTable();
         });
         tdAction.appendChild(delBtn);
         tr.appendChild(tdAction);
@@ -911,6 +1027,71 @@
       });
     }
 
+    function renderWorkoutContext() {
+      const program = getCurrentProgram();
+      if (!program) {
+        workoutContextEl.textContent = "";
+        return;
+      }
+      workoutContextEl.textContent = `${program.name || "Program"} · ${currentWeek} · ${currentDay}`;
+    }
+
+    function renderWorkoutTable() {
+      const program = getCurrentProgram();
+      if (!program) {
+        workoutTableBodyEl.innerHTML = "";
+        return;
+      }
+      ensureWeekAndDaysExist(program, currentWeek);
+      const sets = program.weeks[currentWeek][currentDay];
+
+      workoutTableBodyEl.innerHTML = "";
+      sets.forEach((set, index) => {
+        const tr = document.createElement("tr");
+
+        const tdIndex = document.createElement("td");
+        tdIndex.className = "set-index-cell";
+        tdIndex.textContent = index + 1;
+        tr.appendChild(tdIndex);
+
+        const tdExercise = document.createElement("td");
+        tdExercise.className = "exercise-cell";
+        tdExercise.textContent = set.exercise || "(select in Settings)";
+        tr.appendChild(tdExercise);
+
+        const tdWeight = document.createElement("td");
+        tdWeight.className = "number-cell";
+        const weightInput = document.createElement("input");
+        weightInput.type = "number";
+        weightInput.step = "1";
+        weightInput.value = set.weight ?? "";
+        weightInput.addEventListener("input", () => {
+          const v = weightInput.value;
+          set.weight = v === "" ? null : Number(v);
+          saveAppState();
+        });
+        tdWeight.appendChild(weightInput);
+        tr.appendChild(tdWeight);
+
+        const tdReps = document.createElement("td");
+        tdReps.className = "number-cell";
+        const repsInput = document.createElement("input");
+        repsInput.type = "number";
+        repsInput.step = "1";
+        repsInput.value = set.reps ?? "";
+        repsInput.addEventListener("input", () => {
+          const v = repsInput.value;
+          set.reps = v === "" ? null : Number(v);
+          saveAppState();
+        });
+        tdReps.appendChild(repsInput);
+        tr.appendChild(tdReps);
+
+        workoutTableBodyEl.appendChild(tr);
+      });
+    }
+
+    // Event wiring for settings controls
     programSelectEl.addEventListener("change", () => {
       appState.currentProgramId = programSelectEl.value;
       saveAppState();
@@ -928,6 +1109,8 @@
       renderDayTabs();
       renderSetsTable();
       renderVolumeTable();
+      renderWorkoutContext();
+      renderWorkoutTable();
     });
 
     programNameInputEl.addEventListener("input", () => {
@@ -936,6 +1119,7 @@
       program.name = programNameInputEl.value || "Unnamed program";
       saveAppState();
       renderProgramSelect();
+      renderWorkoutContext();
     });
 
     newProgramBtn.addEventListener("click", () => {
@@ -960,6 +1144,8 @@
       renderDayTabs();
       renderSetsTable();
       renderVolumeTable();
+      renderWorkoutContext();
+      renderWorkoutTable();
     });
 
     deleteProgramBtn.addEventListener("click", () => {
@@ -981,6 +1167,8 @@
       renderDayTabs();
       renderSetsTable();
       renderVolumeTable();
+      renderWorkoutContext();
+      renderWorkoutTable();
     });
 
     weekSelectEl.addEventListener("change", () => {
@@ -992,6 +1180,8 @@
       saveAppState();
       renderSetsTable();
       renderVolumeTable();
+      renderWorkoutContext();
+      renderWorkoutTable();
     });
 
     addSetBtn.addEventListener("click", () => {
@@ -1016,6 +1206,7 @@
       saveAppState();
       renderSetsTable();
       renderVolumeTable();
+      renderWorkoutTable();
     });
 
     function init() {
@@ -1033,6 +1224,9 @@
       renderDayTabs();
       renderSetsTable();
       renderVolumeTable();
+      renderWorkoutContext();
+      renderWorkoutTable();
+      setView("settings");
     }
 
     init();
