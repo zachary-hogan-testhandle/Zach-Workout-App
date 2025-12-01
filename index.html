@@ -222,7 +222,6 @@
       white-space: nowrap;
     }
 
-    /* Lighter text for numeric inputs in tables */
     table input[type="number"] {
       width: 60px;
       color: #9ca3af;
@@ -290,11 +289,11 @@
       color: #e5e7eb;
     }
 
-    /* Workout view tweaks */
+    /* Current Workout view */
     #workoutView .card {
       max-width: 520px;
       margin: 8px auto 0;
-      padding: 10px 12px 12px 12px;
+      padding: 10px 8px 12px 8px;
     }
     #workoutView h2 {
       font-size: 15px;
@@ -323,17 +322,19 @@
     }
 
     .workout-table {
-      width: auto;
-      max-width: 100%;
+      width: 100%;
+      table-layout: fixed;
       margin-left: 0;
     }
     .workout-table .exercise-cell {
-      width: auto;
-      max-width: 220px;
+      width: 65%;
+      max-width: none;
       white-space: normal;
     }
+    .workout-table .number-cell {
+      width: 17%;
+    }
 
-    /* Mobile optimization for workout tab */
     @media (max-width: 600px) {
       #workoutView .card {
         max-width: 100%;
@@ -359,16 +360,14 @@
   </header>
 
   <nav class="top-tabs">
-    <button id="settingsTabBtn" class="top-tab active">Settings</button>
-    <button id="workoutTabBtn" class="top-tab">Workout</button>
+    <button id="workoutTabBtn" class="top-tab active">Current Workout</button>
+    <button id="settingsTabBtn" class="top-tab">Settings</button>
   </nav>
 
   <main>
     <!-- SETTINGS VIEW -->
-    <div id="settingsView" class="view-settings">
-      <!-- Left: Program and day editor -->
+    <div id="settingsView" class="view-settings" style="display:none;">
       <section class="card">
-        <!-- Program controls -->
         <div class="controls-row">
           <div>
             <label for="programSelect">Program</label><br />
@@ -384,7 +383,6 @@
           </div>
         </div>
 
-        <!-- Day selection per program -->
         <div class="controls-row">
           <div>
             <label>Days in this program</label><br />
@@ -392,7 +390,6 @@
           </div>
         </div>
 
-        <!-- Week and day controls -->
         <div class="controls-row">
           <div>
             <label for="weekSelect">Week</label><br />
@@ -426,8 +423,7 @@
                 <th class="action-cell"></th>
               </tr>
             </thead>
-            <tbody id="setsTableBody">
-            </tbody>
+            <tbody id="setsTableBody"></tbody>
           </table>
         </div>
 
@@ -439,7 +435,6 @@
         </div>
       </section>
 
-      <!-- Right: Weekly volume summary -->
       <section class="card">
         <h2>Weekly Volume (sets per muscle)</h2>
         <p class="muted">
@@ -467,10 +462,10 @@
       </section>
     </div>
 
-    <!-- WORKOUT VIEW -->
-    <div id="workoutView" style="display:none;">
+    <!-- CURRENT WORKOUT VIEW -->
+    <div id="workoutView">
       <section class="card">
-        <h2>Workout</h2>
+        <h2>Current Workout</h2>
 
         <div class="controls-row">
           <div>
@@ -499,7 +494,6 @@
           <table class="workout-table">
             <thead>
               <tr>
-                <!-- No Sets column on workout tab -->
                 <th class="exercise-cell">Exercise</th>
                 <th class="number-cell">Weight</th>
                 <th class="number-cell">Reps</th>
@@ -517,29 +511,6 @@
   </main>
 
   <script>
-    /*
-      Data model:
-
-      appState = {
-        currentProgramId: "prog-1",
-        programs: [
-          {
-            id: "prog-1",
-            name: "Default Program",
-            days: ["Monday","Tuesday","Wednesday","Thursday","Friday"],
-            weeks: {
-              "Week 1": { Monday: [sets], ... },
-              ...
-              "Week 6": { ... }
-            }
-          },
-          ...
-        ]
-      }
-
-      Everything is saved to localStorage per device.
-    */
-
     const muscleGroups = [
       "Chest",
       "Back",
@@ -702,6 +673,17 @@
       return w;
     }
 
+    function makeEmptyWeeks() {
+      return {
+        "Week 1": emptyWeek(),
+        "Week 2": emptyWeek(),
+        "Week 3": emptyWeek(),
+        "Week 4": emptyWeek(),
+        "Week 5": emptyWeek(),
+        "Week 6": emptyWeek()
+      };
+    }
+
     const seedWeeks = {
       "Week 1": seedWeek1,
       "Week 2": emptyWeek(),
@@ -712,11 +694,17 @@
     };
 
     const initialAppState = {
-      currentProgramId: "prog-1",
+      currentProgramId: "prog-default",
       programs: [
         {
-          id: "prog-1",
+          id: "prog-default",
           name: "Default Program",
+          days: DEFAULT_ACTIVE_DAYS.slice(),
+          weeks: makeEmptyWeeks()
+        },
+        {
+          id: "prog-arms",
+          name: "Arms & Shoulders",
           days: DEFAULT_ACTIVE_DAYS.slice(),
           weeks: seedWeeks
         }
@@ -724,6 +712,7 @@
     };
 
     const STORAGE_KEY = "zachWorkoutPrograms_v1";
+    const MIGRATION_KEY = "zachWorkoutArmsShouldersMigrated_v1";
 
     function deepClone(obj) {
       return JSON.parse(JSON.stringify(obj));
@@ -738,10 +727,49 @@
       return normalized.length ? normalized : DEFAULT_ACTIVE_DAYS.slice();
     }
 
+    function migrateArmsShoulders(state) {
+      try {
+        if (window.localStorage.getItem(MIGRATION_KEY) === "1") {
+          return state;
+        }
+      } catch (e) {
+        return state;
+      }
+
+      if (!state || !state.programs || !state.programs.length) return state;
+
+      const programs = state.programs;
+      const hasArms = programs.some(p => p.name === "Arms & Shoulders");
+      if (hasArms) {
+        try { window.localStorage.setItem(MIGRATION_KEY, "1"); } catch (e) {}
+        return state;
+      }
+
+      let defaultProg = programs.find(p => p.name === "Default Program") || programs[0];
+      if (!defaultProg) return state;
+
+      const arms = deepClone(defaultProg);
+      arms.id = "prog-arms-" + Date.now().toString(36);
+      arms.name = "Arms & Shoulders";
+      programs.push(arms);
+
+      const clearedWeeks = makeEmptyWeeks();
+      defaultProg.weeks = clearedWeeks;
+      defaultProg.days = normalizeDays(defaultProg.days);
+
+      state.currentProgramId = defaultProg.id;
+
+      try { window.localStorage.setItem(MIGRATION_KEY, "1"); } catch (e) {}
+      return state;
+    }
+
     function loadAppState() {
       try {
         const raw = window.localStorage.getItem(STORAGE_KEY);
-        if (!raw) return deepClone(initialAppState);
+        if (!raw) {
+          const cloned = deepClone(initialAppState);
+          return cloned;
+        }
         const parsed = JSON.parse(raw);
         if (!parsed.programs || !parsed.programs.length) {
           return deepClone(initialAppState);
@@ -749,12 +777,11 @@
         parsed.programs.forEach(p => {
           p.days = normalizeDays(p.days);
           if (!p.weeks) {
-            p.weeks = deepClone(seedWeeks);
+            p.weeks = makeEmptyWeeks();
           }
         });
-        return parsed;
+        return migrateArmsShoulders(parsed);
       } catch (e) {
-        console.warn("Failed to load app state, using initial.", e);
         return deepClone(initialAppState);
       }
     }
@@ -777,7 +804,7 @@
 
     function ensureWeekAndDaysExist(program, weekKey) {
       if (!program.weeks) {
-        program.weeks = {};
+        program.weeks = makeEmptyWeeks();
       }
       if (!program.weeks[weekKey]) {
         program.weeks[weekKey] = emptyWeek();
@@ -811,7 +838,6 @@
       return result;
     }
 
-    // helper: clear on first typing (but not on arrow up/down)
     function attachClearOnType(input) {
       input.dataset.cleared = "false";
       input.addEventListener("keydown", (e) => {
@@ -832,7 +858,16 @@
       });
     }
 
-    // DOM references - common
+    function attachEditedColor(input) {
+      input.dataset.edited = "false";
+      input.addEventListener("input", () => {
+        if (input.dataset.edited === "false") {
+          input.style.color = "#e5e7eb";
+          input.dataset.edited = "true";
+        }
+      });
+    }
+
     const settingsTabBtn = document.getElementById("settingsTabBtn");
     const workoutTabBtn = document.getElementById("workoutTabBtn");
     const settingsViewEl = document.getElementById("settingsView");
@@ -861,9 +896,8 @@
     let appState = loadAppState();
     let currentWeek = "Week 1";
     let currentDay = "Monday";
-    let currentView = "settings";
+    let currentView = "workout";
 
-    // View switching
     function setView(view) {
       currentView = view;
       if (view === "settings") {
@@ -882,16 +916,15 @@
     settingsTabBtn.addEventListener("click", () => setView("settings"));
     workoutTabBtn.addEventListener("click", () => setView("workout"));
 
-    // Helpers
     function renderWeekSelects() {
       weekSelectEl.value = currentWeek;
       weekSelectWorkoutEl.value = currentWeek;
     }
 
-    // Rendering helpers
     function renderProgramSelect() {
       programSelectEl.innerHTML = "";
       programSelectWorkoutEl.innerHTML = "";
+
       appState.programs.forEach(p => {
         const opt1 = document.createElement("option");
         opt1.value = p.id;
@@ -905,6 +938,7 @@
         if (p.id === appState.currentProgramId) opt2.selected = true;
         programSelectWorkoutEl.appendChild(opt2);
       });
+
       const program = getCurrentProgram();
       if (program) {
         programNameInputEl.value = program.name || "";
@@ -1055,11 +1089,12 @@
         tdWeight.className = "number-cell";
         const weightInput = document.createElement("input");
         weightInput.type = "number";
-        weightInput.step = "5"; // step 5 in settings too
+        weightInput.step = "5";
         const wVal = set.weight ?? "";
         weightInput.value = wVal;
         weightInput.placeholder = wVal;
         attachClearOnType(weightInput);
+        attachEditedColor(weightInput);
         weightInput.addEventListener("input", () => {
           const v = weightInput.value;
           set.weight = v === "" ? null : Number(v);
@@ -1079,6 +1114,7 @@
         repsInput.value = rVal;
         repsInput.placeholder = rVal;
         attachClearOnType(repsInput);
+        attachEditedColor(repsInput);
         repsInput.addEventListener("input", () => {
           const v = repsInput.value;
           set.reps = v === "" ? null : Number(v);
@@ -1177,13 +1213,11 @@
       sets.forEach((set) => {
         const tr = document.createElement("tr");
 
-        // Exercise cell
         const tdExercise = document.createElement("td");
         tdExercise.className = "exercise-cell";
         tdExercise.textContent = set.exercise || "(select in Settings)";
         tr.appendChild(tdExercise);
 
-        // Weight cell - step 5, lighter text, clear on typing
         const tdWeight = document.createElement("td");
         tdWeight.className = "number-cell";
         const weightInput = document.createElement("input");
@@ -1193,6 +1227,7 @@
         weightInput.value = weightVal;
         weightInput.placeholder = weightVal;
         attachClearOnType(weightInput);
+        attachEditedColor(weightInput);
         weightInput.addEventListener("input", () => {
           const v = weightInput.value;
           set.weight = v === "" ? null : Number(v);
@@ -1201,7 +1236,6 @@
         tdWeight.appendChild(weightInput);
         tr.appendChild(tdWeight);
 
-        // Reps cell - step 1, lighter text, clear on typing
         const tdReps = document.createElement("td");
         tdReps.className = "number-cell";
         const repsInput = document.createElement("input");
@@ -1211,6 +1245,7 @@
         repsInput.value = repsVal;
         repsInput.placeholder = repsVal;
         attachClearOnType(repsInput);
+        attachEditedColor(repsInput);
         repsInput.addEventListener("input", () => {
           const v = repsInput.value;
           set.reps = v === "" ? null : Number(v);
@@ -1223,13 +1258,12 @@
       });
     }
 
-    // Shared handlers
     function handleProgramChange(newId) {
       appState.currentProgramId = newId;
       saveAppState();
       const program = getCurrentProgram();
       if (program && !program.weeks) {
-        program.weeks = deepClone(seedWeeks);
+        program.weeks = makeEmptyWeeks();
       }
       const activeDays = normalizeDays(getCurrentProgram().days);
       if (!activeDays.includes(currentDay)) {
@@ -1258,7 +1292,6 @@
       renderWorkoutTable();
     }
 
-    // Event wiring for settings controls
     programSelectEl.addEventListener("change", () => {
       handleProgramChange(programSelectEl.value);
     });
@@ -1280,7 +1313,7 @@
       const baseProgram = getCurrentProgram();
       const cloneWeeks = baseProgram && baseProgram.weeks
         ? deepClone(baseProgram.weeks)
-        : deepClone(seedWeeks);
+        : makeEmptyWeeks();
 
       const newId = "prog-" + Date.now().toString(36);
       const newProgram = {
@@ -1371,7 +1404,7 @@
       renderVolumeTable();
       renderWorkoutContext();
       renderWorkoutTable();
-      setView("settings");
+      setView("workout");
     }
 
     init();
