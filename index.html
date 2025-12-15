@@ -5,9 +5,7 @@
   <title>Zach Workout App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
@@ -23,25 +21,11 @@
       align-items: center;
       justify-content: space-between;
     }
-    header h1 {
-      margin: 0;
-      font-size: 20px;
-      letter-spacing: 0.03em;
-    }
-    header span {
-      font-size: 12px;
-      color: #9ca3af;
-    }
+    header h1 { margin: 0; font-size: 20px; letter-spacing: 0.03em; }
+    header span { font-size: 12px; color: #9ca3af; }
     @media (max-width: 600px) {
-      header {
-        padding: 12px 12px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-      }
-      header h1 {
-        font-size: 18px;
-      }
+      header { padding: 12px 12px; flex-direction: column; align-items: flex-start; gap: 4px; }
+      header h1 { font-size: 18px; }
     }
 
     .top-tabs {
@@ -66,22 +50,10 @@
       color: #e5e7eb;
     }
 
-    main {
-      padding: 16px 16px 24px 16px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
+    main { padding: 16px 16px 24px 16px; max-width: 1100px; margin: 0 auto; }
 
-    .view-settings {
-      display: grid;
-      grid-template-columns: 3fr 2fr;
-      gap: 24px;
-    }
-    @media (max-width: 900px) {
-      .view-settings {
-        grid-template-columns: 1fr;
-      }
-    }
+    .view-settings { display: grid; grid-template-columns: 3fr 2fr; gap: 24px; }
+    @media (max-width: 900px) { .view-settings { grid-template-columns: 1fr; } }
 
     .card {
       background: #020617;
@@ -90,26 +62,10 @@
       padding: 16px 18px 18px 18px;
       box-shadow: 0 10px 30px rgba(15,23,42,0.7);
     }
-    .card h2 {
-      margin: 0 0 8px 0;
-      font-size: 16px;
-    }
-    .muted {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-bottom: 8px;
-    }
-    .controls-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-    label {
-      font-size: 12px;
-      color: #9ca3af;
-    }
+    .card h2 { margin: 0 0 8px 0; font-size: 16px; }
+    .muted { font-size: 12px; color: #9ca3af; margin-bottom: 8px; }
+    .controls-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+    label { font-size: 12px; color: #9ca3af; }
     select, input[type="number"], input[type="text"] {
       background: #020617;
       color: #e5e7eb;
@@ -118,13 +74,8 @@
       padding: 4px 6px;
       font-size: 13px;
     }
-    select:focus, input:focus {
-      outline: 1px solid #3b82f6;
-      border-color: #3b82f6;
-    }
-    input[type="text"] {
-      min-width: 140px;
-    }
+    select:focus, input:focus { outline: 1px solid #3b82f6; border-color: #3b82f6; }
+    input[type="text"] { min-width: 140px; }
     button {
       border-radius: 6px;
       border: 1px solid transparent;
@@ -137,19 +88,10 @@
       align-items: center;
       gap: 4px;
     }
-    button.secondary {
-      background: #020617;
-      border-color: #4b5563;
-      color: #e5e7eb;
-    }
-    button.danger {
-      background: #7f1d1d;
-      border-color: #b91c1c;
-    }
-    button:disabled {
-      opacity: 0.6;
-      cursor: default;
-    }
+    button.secondary { background: #020617; border-color: #4b5563; color: #e5e7eb; }
+    button.danger { background: #7f1d1d; border-color: #b91c1c; }
+    button:disabled { opacity: 0.6; cursor: default; }
+
     .tabs {
       display: inline-flex;
       border-radius: 999px;
@@ -167,22 +109,10 @@
       background: transparent;
       color: #9ca3af;
     }
-    .tab.active {
-      background: #1d4ed8;
-      color: #e5e7eb;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-      font-size: 12px;
-      table-layout: auto;
-    }
-    th, td {
-      padding: 4px 4px;
-      border-bottom: 1px solid #1f2937;
-      text-align: left;
-    }
+    .tab.active { background: #1d4ed8; color: #e5e7eb; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; table-layout: auto; }
+    th, td { padding: 4px 4px; border-bottom: 1px solid #1f2937; text-align: left; }
     th {
       font-weight: 500;
       color: #9ca3af;
@@ -191,89 +121,24 @@
       top: 0;
       z-index: 1;
     }
-    tbody tr:nth-child(even) {
-      background: #020617;
-    }
-    tbody tr:nth-child(odd) {
-      background: #020617;
-    }
+    .set-index-cell { width: 32px; text-align: right; color: #6b7280; white-space: nowrap; }
+    .muscle-cell { width: 90px; white-space: nowrap; }
+    .exercise-cell { width: auto; max-width: 260px; }
+    .number-cell { width: 60px; white-space: nowrap; }
+    .action-cell { width: 40px; text-align: right; white-space: nowrap; }
 
-    .set-index-cell {
-      width: 32px;
-      text-align: right;
-      color: #6b7280;
-      white-space: nowrap;
-    }
-    .muscle-cell {
-      width: 90px;
-      white-space: nowrap;
-    }
-    .exercise-cell {
-      width: auto;
-      max-width: 260px;
-    }
-    .number-cell {
-      width: 60px;
-      white-space: nowrap;
-    }
-    .action-cell {
-      width: 40px;
-      text-align: right;
-      white-space: nowrap;
-    }
+    table input[type="number"] { width: 60px; color: #9ca3af; }
 
-    table input[type="number"] {
-      width: 60px;
-      color: #9ca3af;
-    }
+    .pill { display: inline-block; padding: 2px 6px; border-radius: 999px; font-size: 11px; border: 1px solid #1f2937; }
+    .pill.ok { background: #064e3b; border-color: #047857; color: #bbf7d0; }
+    .pill.high { background: #7f1d1d; border-color: #b91c1c; color: #fecaca; }
+    .pill.low { background: #312e81; border-color: #4f46e5; color: #e0e7ff; }
 
-    .pill {
-      display: inline-block;
-      padding: 2px 6px;
-      border-radius: 999px;
-      font-size: 11px;
-      border: 1px solid #1f2937;
-    }
-    .pill.ok {
-      background: #064e3b;
-      border-color: #047857;
-      color: #bbf7d0;
-    }
-    .pill.high {
-      background: #7f1d1d;
-      border-color: #b91c1c;
-      color: #fecaca;
-    }
-    .pill.low {
-      background: #312e81;
-      border-color: #4f46e5;
-      color: #e0e7ff;
-    }
-    .volume-table td {
-      padding-top: 3px;
-      padding-bottom: 3px;
-    }
-    .volume-table tbody tr:hover {
-      background: #020617;
-    }
-    .small-note {
-      font-size: 11px;
-      color: #6b7280;
-      margin-top: 6px;
-    }
-    .code-hint {
-      font-size: 11px;
-      color: #6b7280;
-      margin-top: 10px;
-      border-top: 1px dashed #1f2937;
-      padding-top: 6px;
-    }
-    .day-toggle-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 2px;
-    }
+    .volume-table td { padding-top: 3px; padding-bottom: 3px; }
+    .small-note { font-size: 11px; color: #6b7280; margin-top: 6px; }
+    .code-hint { font-size: 11px; color: #6b7280; margin-top: 10px; border-top: 1px dashed #1f2937; padding-top: 6px; }
+
+    .day-toggle-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
     .day-toggle-btn {
       font-size: 11px;
       padding: 3px 7px;
@@ -283,83 +148,30 @@
       color: #9ca3af;
       cursor: pointer;
     }
-    .day-toggle-btn.active {
-      background: #1d4ed8;
-      border-color: #1d4ed8;
-      color: #e5e7eb;
-    }
+    .day-toggle-btn.active { background: #1d4ed8; border-color: #1d4ed8; color: #e5e7eb; }
 
     /* Current Workout view */
-    #workoutView .card {
-      max-width: 520px;
-      margin: 8px auto 0;
-      padding: 10px 8px 12px 8px;
-    }
-    #workoutView h2 {
-      font-size: 15px;
-      margin-bottom: 4px;
-    }
-    #workoutView .controls-row {
-      margin-bottom: 6px;
-      gap: 6px;
-    }
-    #workoutView select {
-      font-size: 12px;
-      padding: 3px 5px;
-    }
-    #workoutContext {
-      font-size: 11px;
-      color: #9ca3af;
-      margin-bottom: 6px;
-    }
-    #workoutView th,
-    #workoutView td {
-      padding-top: 3px;
-      padding-bottom: 3px;
-    }
-    #workoutView .small-note {
-      margin-top: 4px;
-    }
+    #workoutView .card { max-width: 520px; margin: 8px auto 0; padding: 10px 8px 12px 8px; }
+    #workoutView h2 { font-size: 15px; margin-bottom: 4px; }
+    #workoutView .controls-row { margin-bottom: 6px; gap: 6px; }
+    #workoutView select { font-size: 12px; padding: 3px 5px; }
+    #workoutContext { font-size: 11px; color: #9ca3af; margin-bottom: 6px; }
+    #workoutView th, #workoutView td { padding-top: 3px; padding-bottom: 3px; }
+    #workoutView .small-note { margin-top: 4px; }
 
-    .workout-table {
-      width: 100%;
-      table-layout: fixed;
-      margin-left: 0;
-    }
-    .workout-table .exercise-cell {
-      width: 65%;
-      max-width: none;
-      white-space: normal;
-    }
-    .workout-table .number-cell {
-      width: 17%;
-    }
+    .workout-table { width: 100%; table-layout: fixed; margin-left: 0; }
+    .workout-table .exercise-cell { width: 65%; max-width: none; white-space: normal; }
+    .workout-table .number-cell { width: 17%; }
 
-    /* Completed set styling in workout table */
-    .workout-table tr.set-completed {
-      background: #111827;
-    }
-    .workout-table tr.set-completed .exercise-cell {
-      color: #9ca3af;
-      text-decoration: line-through;
-    }
-    .workout-table tr.set-completed input[type="number"] {
-      opacity: 0.75;
-    }
+    /* Completed set styling */
+    .workout-table tr.set-completed { background: #111827; }
+    .workout-table tr.set-completed .exercise-cell { color: #9ca3af; text-decoration: line-through; }
+    .workout-table tr.set-completed input[type="number"] { opacity: 0.75; }
 
     @media (max-width: 600px) {
-      #workoutView .card {
-        max-width: 100%;
-        margin: 8px 0 0 0;
-        border-radius: 0;
-        box-shadow: none;
-      }
-      #workoutView .controls-row {
-        flex-wrap: wrap;
-      }
-      #workoutView .tabs {
-        margin-left: 0;
-      }
+      #workoutView .card { max-width: 100%; margin: 8px 0 0 0; border-radius: 0; box-shadow: none; }
+      #workoutView .controls-row { flex-wrap: wrap; }
+      #workoutView .tabs { margin-left: 0; }
     }
   </style>
 </head>
@@ -442,7 +254,7 @@
         <div style="margin-top: 10px; display: flex; justify-content: space-between; gap: 8px; align-items: center;">
           <button id="addSetBtn">+ Add set</button>
           <span class="small-note">
-            To change defaults, edit <code>initialAppState</code> and <code>seedWeeks</code> inside this file.
+            To change defaults, edit <code>initialAppState</code> and templates inside this file.
           </span>
         </div>
       </section>
@@ -468,8 +280,7 @@
         </div>
 
         <div class="code-hint">
-          Dev hint: programs live in <code>appState.programs</code>.<br/>
-          Volume is computed in <code>computeVolumeForWeek</code> using the active days for each program.
+          Programs live in <code>appState.programs</code>. Volume counts sets on active days only.
         </div>
       </section>
     </div>
@@ -516,172 +327,70 @@
         </div>
 
         <p class="small-note">
-          This view is for in-gym logging. Weight and reps start from your plan and can be adjusted on the fly. Tap a row to mark a set complete.
+          Tap a row (not an input) to mark a set complete. Data saves locally on this device.
         </p>
       </section>
     </div>
   </main>
 
   <script>
-    const muscleGroups = [
-      "Chest",
-      "Back",
-      "Triceps",
-      "Biceps",
-      "Shoulders",
-      "Quads",
-      "Glutes",
-      "Hamstrings",
-      "Calves",
-      "Forearms"
-    ];
+    const muscleGroups = ["Chest","Back","Triceps","Biceps","Shoulders","Quads","Glutes","Hamstrings","Calves","Forearms"];
 
     const idealSets = {
-      "Chest": 4,
-      "Back": 4,
-      "Triceps": 11,
-      "Biceps": 15,
-      "Shoulders": 15,
-      "Quads": 4,
-      "Glutes": 4,
-      "Hamstrings": 1,
-      "Calves": 4,
-      "Forearms": 9
+      "Chest": 4, "Back": 4, "Triceps": 11, "Biceps": 15, "Shoulders": 15,
+      "Quads": 4, "Glutes": 4, "Hamstrings": 1, "Calves": 4, "Forearms": 9
     };
 
+    // Canonical exercise names only (no duplicates for Dip or Lateral Raise)
     const exerciseCatalog = [
-      { "muscle": "Triceps", "name": "Cable Overhead Triceps Extension (Rope)" },
-      { "muscle": "Triceps", "name": "Cable Triceps Pushdown (Single Arm)" },
-      { "muscle": "Triceps", "name": "Dumbbell Overhead Extension (Two-Arms)" },
-      { "muscle": "Triceps", "name": "Dip (Triceps-Focused)" },
-      { "muscle": "Biceps", "name": "Dumbbell Curl (Incline)" },
-      { "muscle": "Biceps", "name": "Cable Curl (EZ Bar, Wide Grip)" },
-      { "muscle": "Biceps", "name": "Cable Rope Twist Curl" },
-      { "muscle": "Biceps", "name": "Freemotion Curl (Single-Arm)" },
-      { "muscle": "Shoulders", "name": "Cable Leaning Lateral Raise" },
-      { "muscle": "Shoulders", "name": "Cable Single Arm Rear Delt Raise" },
-      { "muscle": "Shoulders", "name": "Dumbbell Lateral Raise" },
-      { "muscle": "Forearms", "name": "Barbell Standing Wrist Curl" },
-      { "muscle": "Glutes", "name": "Deadlift" },
-      { "muscle": "Glutes", "name": "Cable Pull Through" },
-      { "muscle": "Chest", "name": "Bench Press (Wide Grip)" },
-      { "muscle": "Chest", "name": "Dumbbell Flye (Flat)" },
-      { "muscle": "Back", "name": "Pulldown (Straight Arm)" },
-      { "muscle": "Back", "name": "Pullup (Rings)" },
-      { "muscle": "Quads", "name": "Barbell Squat (High Bar)" },
-      { "muscle": "Quads", "name": "Goblet Squat" },
-      { "muscle": "Calves", "name": "Stair Calves (Single Leg)" },
-      { "muscle": "Hamstrings", "name": "Stiff-Legged Dead Lift" }
+      { muscle: "Triceps", name: "Cable Overhead Triceps Extension (Rope)" },
+      { muscle: "Triceps", name: "Cable Triceps Pushdown (Single Arm)" },
+      { muscle: "Triceps", name: "Dumbbell Overhead Extension (2-Arms)" },
+      { muscle: "Triceps", name: "Dip (Triceps-Focused)" },
+      { muscle: "Triceps", name: "Triceps Kickbacks" },
+
+      { muscle: "Biceps", name: "Dumbbell Curl (Incline)" },
+      { muscle: "Biceps", name: "Cable Curl (EZ Bar, Wide Grip)" },
+      { muscle: "Biceps", name: "Cable Rope Twist Curl" },
+      { muscle: "Biceps", name: "Freemotion Curl (Single-Arm)" },
+      { muscle: "Biceps", name: "Hammer Curl" },
+      { muscle: "Biceps", name: "Chin Ups" },
+
+      { muscle: "Shoulders", name: "Cable Leaning Lateral Raise" },
+      { muscle: "Shoulders", name: "Cable Single Arm Rear Delt Raise" },
+      { muscle: "Shoulders", name: "Dumbbell Lateral Raise" },
+      { muscle: "Shoulders", name: "Dumbbell Overhead Press" },
+
+      { muscle: "Forearms", name: "Barbell Standing Wrist Curl" },
+
+      { muscle: "Glutes", name: "Deadlift" },
+      { muscle: "Glutes", name: "Cable Pull Through" },
+
+      { muscle: "Chest", name: "Bench Press (Wide Grip)" },
+      { muscle: "Chest", name: "Dumbbell Flye (Flat)" },
+      { muscle: "Chest", name: "Dumbbell Bench Press" },
+
+      { muscle: "Back", name: "Pulldown (Straight Arm)" },
+      { muscle: "Back", name: "Pullup (Rings)" },
+      { muscle: "Back", name: "Seated Row" },
+
+      { muscle: "Quads", name: "Barbell Squat (High Bar)" },
+      { muscle: "Quads", name: "Goblet Squat" },
+
+      { muscle: "Calves", name: "Stair Calves (Single Leg)" },
+
+      { muscle: "Hamstrings", name: "Stiff-Legged Dead Lift" }
     ];
 
-    const ALL_DAYS = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday"
-    ];
+    const ALL_DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+    const DEFAULT_ACTIVE_DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
+    const THREE_DAY_MWF = ["Monday","Wednesday","Friday"];
 
-    const DEFAULT_ACTIVE_DAYS = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday"
-    ];
-
-    const seedWeek1 = {
-      "Monday": [
-        { "exercise": "Cable Overhead Triceps Extension (Rope)", "muscle": "Triceps", "weight": 40, "reps": 13 },
-        { "exercise": "Cable Overhead Triceps Extension (Rope)", "muscle": "Triceps", "weight": 40, "reps": 13 },
-        { "exercise": "Cable Overhead Triceps Extension (Rope)", "muscle": "Triceps", "weight": 40, "reps": 13 },
-        { "exercise": "Bench Press (Wide Grip)", "muscle": "Chest", "weight": 175, "reps": 11 },
-        { "exercise": "Bench Press (Wide Grip)", "muscle": "Chest", "weight": 175, "reps": 11 },
-        { "exercise": "Pulldown (Straight Arm)", "muscle": "Back", "weight": 50, "reps": 11 },
-        { "exercise": "Pulldown (Straight Arm)", "muscle": "Back", "weight": 50, "reps": 11 },
-        { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 25, "reps": 14 },
-        { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 25, "reps": 14 },
-        { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 25, "reps": 14 },
-        { "exercise": "Cable Leaning Lateral Raise", "muscle": "Shoulders", "weight": 5, "reps": 13 },
-        { "exercise": "Cable Leaning Lateral Raise", "muscle": "Shoulders", "weight": 5, "reps": 13 },
-        { "exercise": "Cable Leaning Lateral Raise", "muscle": "Shoulders", "weight": 5, "reps": 13 },
-        { "exercise": "Barbell Standing Wrist Curl", "muscle": "Forearms", "weight": 45, "reps": 18 },
-        { "exercise": "Barbell Standing Wrist Curl", "muscle": "Forearms", "weight": 45, "reps": 18 },
-        { "exercise": "Barbell Standing Wrist Curl", "muscle": "Forearms", "weight": 45, "reps": 18 }
-      ],
-      "Tuesday": [
-        { "exercise": "Deadlift", "muscle": "Glutes", "weight": 315, "reps": 7 },
-        { "exercise": "Deadlift", "muscle": "Glutes", "weight": 315, "reps": 7 },
-        { "exercise": "Deadlift", "muscle": "Glutes", "weight": 315, "reps": 7 },
-        { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 225, "reps": 11 },
-        { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 225, "reps": 11 },
-        { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13 },
-        { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13 },
-        { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15 },
-        { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15 }
-      ],
-      "Wednesday": [
-        { "exercise": "Cable Triceps Pushdown (Single Arm)", "muscle": "Triceps", "weight": 20, "reps": 13 },
-        { "exercise": "Cable Triceps Pushdown (Single Arm)", "muscle": "Triceps", "weight": 20, "reps": 13 },
-        { "exercise": "Cable Triceps Pushdown (Single Arm)", "muscle": "Triceps", "weight": 20, "reps": 13 },
-        { "exercise": "Dumbbell Flye (Flat)", "muscle": "Chest", "weight": 40, "reps": 13 },
-        { "exercise": "Dumbbell Flye (Flat)", "muscle": "Chest", "weight": 40, "reps": 13 },
-        { "exercise": "Pullup (Rings)", "muscle": "Back", "weight": 0, "reps": 7 },
-        { "exercise": "Pullup (Rings)", "muscle": "Back", "weight": 0, "reps": 7 },
-        { "exercise": "Cable Rope Twist Curl", "muscle": "Biceps", "weight": 20, "reps": 13 },
-        { "exercise": "Cable Rope Twist Curl", "muscle": "Biceps", "weight": 20, "reps": 13 },
-        { "exercise": "Cable Rope Twist Curl", "muscle": "Biceps", "weight": 20, "reps": 13 },
-        { "exercise": "Cable Single Arm Rear Delt Raise", "muscle": "Shoulders", "weight": 5, "reps": 13 },
-        { "exercise": "Cable Single Arm Rear Delt Raise", "muscle": "Shoulders", "weight": 5, "reps": 13 },
-        { "exercise": "Cable Single Arm Rear Delt Raise", "muscle": "Shoulders", "weight": 5, "reps": 13 },
-        { "exercise": "Stiff-Legged Dead Lift", "muscle": "Hamstrings", "weight": 220, "reps": 9 },
-        { "exercise": "Stiff-Legged Dead Lift", "muscle": "Hamstrings", "weight": 220, "reps": 9 },
-        { "exercise": "Stiff-Legged Dead Lift", "muscle": "Hamstrings", "weight": 220, "reps": 9 },
-        { "exercise": "Stiff-Legged Dead Lift", "muscle": "Hamstrings", "weight": 220, "reps": 9 }
-      ],
-      "Thursday": [
-        { "exercise": "Dip (Triceps-Focused)", "muscle": "Triceps", "weight": 0, "reps": 14 },
-        { "exercise": "Dip (Triceps-Focused)", "muscle": "Triceps", "weight": 0, "reps": 14 },
-        { "exercise": "Dip (Triceps-Focused)", "muscle": "Triceps", "weight": 0, "reps": 14 },
-        { "exercise": "Bench Press (Wide Grip)", "muscle": "Chest", "weight": 155, "reps": 13 },
-        { "exercise": "Bench Press (Wide Grip)", "muscle": "Chest", "weight": 155, "reps": 13 },
-        { "exercise": "Pulldown (Straight Arm)", "muscle": "Back", "weight": 40, "reps": 13 },
-        { "exercise": "Pulldown (Straight Arm)", "muscle": "Back", "weight": 40, "reps": 13 },
-        { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 20, "reps": 11 },
-        { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 20, "reps": 11 },
-        { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 20, "reps": 11 },
-        { "exercise": "Cable Leaning Lateral Raise", "muscle": "Shoulders", "weight": 5, "reps": 11 }
-      ],
-      "Friday": [
-        { "exercise": "Dumbbell Overhead Extension (Two-Arms)", "muscle": "Triceps", "weight": 10, "reps": 15 },
-        { "exercise": "Dumbbell Overhead Extension (Two-Arms)", "muscle": "Triceps", "weight": 10, "reps": 15 },
-        { "exercise": "Dumbbell Overhead Extension (Two-Arms)", "muscle": "Triceps", "weight": 10, "reps": 15 },
-        { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 205, "reps": 11 },
-        { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 205, "reps": 11 },
-        { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 205, "reps": 11 },
-        { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13 },
-        { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13 },
-        { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13 },
-        { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15 },
-        { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15 },
-        { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15 },
-        { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11 },
-        { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11 },
-        { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11 },
-        { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11 },
-        { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11 }
-      ],
-      "Saturday": [],
-      "Sunday": []
-    };
+    function deepClone(obj) { return JSON.parse(JSON.stringify(obj)); }
 
     function emptyWeek() {
       const w = {};
-      ALL_DAYS.forEach(day => {
-        w[day] = [];
-      });
+      ALL_DAYS.forEach(day => { w[day] = []; });
       return w;
     }
 
@@ -696,8 +405,149 @@
       };
     }
 
-    const seedWeeks = {
-      "Week 1": seedWeek1,
+    function expandDayPlan(dayPlan) {
+      const out = [];
+      dayPlan.forEach(item => {
+        for (let i = 0; i < item.sets; i++) {
+          out.push({
+            muscle: item.muscle,
+            exercise: item.exercise,
+            weight: null,
+            reps: null,
+            completed: false
+          });
+        }
+      });
+      return out;
+    }
+
+    // Arms & Shoulders (3 Days) template (Week 1 seeded)
+    const armsShoulders3DayWeek1 = (() => {
+      const week = emptyWeek();
+      week["Monday"] = expandDayPlan([
+        { muscle: "Triceps", exercise: "Dumbbell Overhead Extension (2-Arms)", sets: 2 },
+        { muscle: "Triceps", exercise: "Dip (Triceps-Focused)", sets: 2 },
+        { muscle: "Shoulders", exercise: "Dumbbell Lateral Raise", sets: 2 },
+        { muscle: "Biceps", exercise: "Dumbbell Curl (Incline)", sets: 2 },
+        { muscle: "Chest", exercise: "Dumbbell Flye (Flat)", sets: 3 },
+        { muscle: "Quads", exercise: "Goblet Squat", sets: 3 }
+      ]);
+      week["Wednesday"] = expandDayPlan([
+        { muscle: "Biceps", exercise: "Hammer Curl", sets: 2 },
+        { muscle: "Biceps", exercise: "Chin Ups", sets: 2 },
+        { muscle: "Triceps", exercise: "Triceps Kickbacks", sets: 2 },
+        { muscle: "Shoulders", exercise: "Dumbbell Overhead Press", sets: 2 },
+        { muscle: "Back", exercise: "Seated Row", sets: 3 },
+        { muscle: "Glutes", exercise: "Cable Pull Through", sets: 3 }
+      ]);
+      week["Friday"] = expandDayPlan([
+        { muscle: "Shoulders", exercise: "Dumbbell Lateral Raise", sets: 2 },
+        { muscle: "Shoulders", exercise: "Dumbbell Overhead Press", sets: 2 },
+        { muscle: "Biceps", exercise: "Dumbbell Curl (Incline)", sets: 2 },
+        { muscle: "Triceps", exercise: "Dumbbell Overhead Extension (2-Arms)", sets: 2 },
+        { muscle: "Chest", exercise: "Dumbbell Bench Press", sets: 2 },
+        { muscle: "Back", exercise: "Pullup (Rings)", sets: 2 }
+      ]);
+      return week;
+    })();
+
+    const seedWeeks3Day = {
+      "Week 1": armsShoulders3DayWeek1,
+      "Week 2": emptyWeek(),
+      "Week 3": emptyWeek(),
+      "Week 4": emptyWeek(),
+      "Week 5": emptyWeek(),
+      "Week 6": emptyWeek()
+    };
+
+    // Existing 5-day seed (unchanged)
+    const seedWeek1_5Day = {
+      "Monday": [
+        { "exercise": "Cable Overhead Triceps Extension (Rope)", "muscle": "Triceps", "weight": 40, "reps": 13, "completed": false },
+        { "exercise": "Cable Overhead Triceps Extension (Rope)", "muscle": "Triceps", "weight": 40, "reps": 13, "completed": false },
+        { "exercise": "Cable Overhead Triceps Extension (Rope)", "muscle": "Triceps", "weight": 40, "reps": 13, "completed": false },
+        { "exercise": "Bench Press (Wide Grip)", "muscle": "Chest", "weight": 175, "reps": 11, "completed": false },
+        { "exercise": "Bench Press (Wide Grip)", "muscle": "Chest", "weight": 175, "reps": 11, "completed": false },
+        { "exercise": "Pulldown (Straight Arm)", "muscle": "Back", "weight": 50, "reps": 11, "completed": false },
+        { "exercise": "Pulldown (Straight Arm)", "muscle": "Back", "weight": 50, "reps": 11, "completed": false },
+        { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 25, "reps": 14, "completed": false },
+        { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 25, "reps": 14, "completed": false },
+        { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 25, "reps": 14, "completed": false },
+        { "exercise": "Cable Leaning Lateral Raise", "muscle": "Shoulders", "weight": 5, "reps": 13, "completed": false },
+        { "exercise": "Cable Leaning Lateral Raise", "muscle": "Shoulders", "weight": 5, "reps": 13, "completed": false },
+        { "exercise": "Cable Leaning Lateral Raise", "muscle": "Shoulders", "weight": 5, "reps": 13, "completed": false },
+        { "exercise": "Barbell Standing Wrist Curl", "muscle": "Forearms", "weight": 45, "reps": 18, "completed": false },
+        { "exercise": "Barbell Standing Wrist Curl", "muscle": "Forearms", "weight": 45, "reps": 18, "completed": false },
+        { "exercise": "Barbell Standing Wrist Curl", "muscle": "Forearms", "weight": 45, "reps": 18, "completed": false }
+      ],
+      "Tuesday": [
+        { "exercise": "Deadlift", "muscle": "Glutes", "weight": 315, "reps": 7, "completed": false },
+        { "exercise": "Deadlift", "muscle": "Glutes", "weight": 315, "reps": 7, "completed": false },
+        { "exercise": "Deadlift", "muscle": "Glutes", "weight": 315, "reps": 7, "completed": false },
+        { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 225, "reps": 11, "completed": false },
+        { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 225, "reps": 11, "completed": false },
+        { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13, "completed": false },
+        { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13, "completed": false },
+        { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15, "completed": false },
+        { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15, "completed": false }
+      ],
+      "Wednesday": [
+        { "exercise": "Cable Triceps Pushdown (Single Arm)", "muscle": "Triceps", "weight": 20, "reps": 13, "completed": false },
+        { "exercise": "Cable Triceps Pushdown (Single Arm)", "muscle": "Triceps", "weight": 20, "reps": 13, "completed": false },
+        { "exercise": "Cable Triceps Pushdown (Single Arm)", "muscle": "Triceps", "weight": 20, "reps": 13, "completed": false },
+        { "exercise": "Dumbbell Flye (Flat)", "muscle": "Chest", "weight": 40, "reps": 13, "completed": false },
+        { "exercise": "Dumbbell Flye (Flat)", "muscle": "Chest", "weight": 40, "reps": 13, "completed": false },
+        { "exercise": "Pullup (Rings)", "muscle": "Back", "weight": 0, "reps": 7, "completed": false },
+        { "exercise": "Pullup (Rings)", "muscle": "Back", "weight": 0, "reps": 7, "completed": false },
+        { "exercise": "Cable Rope Twist Curl", "muscle": "Biceps", "weight": 20, "reps": 13, "completed": false },
+        { "exercise": "Cable Rope Twist Curl", "muscle": "Biceps", "weight": 20, "reps": 13, "completed": false },
+        { "exercise": "Cable Rope Twist Curl", "muscle": "Biceps", "weight": 20, "reps": 13, "completed": false },
+        { "exercise": "Cable Single Arm Rear Delt Raise", "muscle": "Shoulders", "weight": 5, "reps": 13, "completed": false },
+        { "exercise": "Cable Single Arm Rear Delt Raise", "muscle": "Shoulders", "weight": 5, "reps": 13, "completed": false },
+        { "exercise": "Cable Single Arm Rear Delt Raise", "muscle": "Shoulders", "weight": 5, "reps": 13, "completed": false },
+        { "exercise": "Stiff-Legged Dead Lift", "muscle": "Hamstrings", "weight": 220, "reps": 9, "completed": false },
+        { "exercise": "Stiff-Legged Dead Lift", "muscle": "Hamstrings", "weight": 220, "reps": 9, "completed": false },
+        { "exercise": "Stiff-Legged Dead Lift", "muscle": "Hamstrings", "weight": 220, "reps": 9, "completed": false },
+        { "exercise": "Stiff-Legged Dead Lift", "muscle": "Hamstrings", "weight": 220, "reps": 9, "completed": false }
+      ],
+      "Thursday": [
+        { "exercise": "Dip (Triceps-Focused)", "muscle": "Triceps", "weight": 0, "reps": 14, "completed": false },
+        { "exercise": "Dip (Triceps-Focused)", "muscle": "Triceps", "weight": 0, "reps": 14, "completed": false },
+        { "exercise": "Dip (Triceps-Focused)", "muscle": "Triceps", "weight": 0, "reps": 14, "completed": false },
+        { "exercise": "Bench Press (Wide Grip)", "muscle": "Chest", "weight": 155, "reps": 13, "completed": false },
+        { "exercise": "Bench Press (Wide Grip)", "muscle": "Chest", "weight": 155, "reps": 13, "completed": false },
+        { "exercise": "Pulldown (Straight Arm)", "muscle": "Back", "weight": 40, "reps": 13, "completed": false },
+        { "exercise": "Pulldown (Straight Arm)", "muscle": "Back", "weight": 40, "reps": 13, "completed": false },
+        { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 20, "reps": 11, "completed": false },
+        { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 20, "reps": 11, "completed": false },
+        { "exercise": "Dumbbell Curl (Incline)", "muscle": "Biceps", "weight": 20, "reps": 11, "completed": false },
+        { "exercise": "Cable Leaning Lateral Raise", "muscle": "Shoulders", "weight": 5, "reps": 11, "completed": false }
+      ],
+      "Friday": [
+        { "exercise": "Dumbbell Overhead Extension (Two-Arms)", "muscle": "Triceps", "weight": 10, "reps": 15, "completed": false },
+        { "exercise": "Dumbbell Overhead Extension (Two-Arms)", "muscle": "Triceps", "weight": 10, "reps": 15, "completed": false },
+        { "exercise": "Dumbbell Overhead Extension (Two-Arms)", "muscle": "Triceps", "weight": 10, "reps": 15, "completed": false },
+        { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 205, "reps": 11, "completed": false },
+        { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 205, "reps": 11, "completed": false },
+        { "exercise": "Barbell Squat (High Bar)", "muscle": "Quads", "weight": 205, "reps": 11, "completed": false },
+        { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13, "completed": false },
+        { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13, "completed": false },
+        { "exercise": "Goblet Squat", "muscle": "Quads", "weight": 45, "reps": 13, "completed": false },
+        { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15, "completed": false },
+        { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15, "completed": false },
+        { "exercise": "Stair Calves (Single Leg)", "muscle": "Calves", "weight": 0, "reps": 15, "completed": false },
+        { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11, "completed": false },
+        { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11, "completed": false },
+        { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11, "completed": false },
+        { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11, "completed": false },
+        { "exercise": "Freemotion Curl (Single-Arm)", "muscle": "Biceps", "weight": 20, "reps": 11, "completed": false }
+      ],
+      "Saturday": [],
+      "Sunday": []
+    };
+
+    const seedWeeks5Day = {
+      "Week 1": seedWeek1_5Day,
       "Week 2": emptyWeek(),
       "Week 3": emptyWeek(),
       "Week 4": emptyWeek(),
@@ -708,68 +558,83 @@
     const initialAppState = {
       currentProgramId: "prog-default",
       programs: [
-        {
-          id: "prog-default",
-          name: "Default Program",
-          days: DEFAULT_ACTIVE_DAYS.slice(),
-          weeks: makeEmptyWeeks()
-        },
-        {
-          id: "prog-arms",
-          name: "Arms & Shoulders",
-          days: DEFAULT_ACTIVE_DAYS.slice(),
-          weeks: seedWeeks
-        }
+        { id: "prog-default", name: "Default Program", days: DEFAULT_ACTIVE_DAYS.slice(), weeks: makeEmptyWeeks() },
+        { id: "prog-arms-5", name: "Arms & Shoulders (5 Days)", days: DEFAULT_ACTIVE_DAYS.slice(), weeks: seedWeeks5Day },
+        { id: "prog-arms-3", name: "Arms & Shoulders (3 Days)", days: THREE_DAY_MWF.slice(), weeks: seedWeeks3Day }
       ]
     };
 
     const STORAGE_KEY = "zachWorkoutPrograms_v1";
-    const MIGRATION_KEY = "zachWorkoutArmsShouldersMigrated_v1";
-
-    function deepClone(obj) {
-      return JSON.parse(JSON.stringify(obj));
-    }
+    const MIGRATION_KEY = "zachWorkoutTemplatesMigrated_v3";
 
     function normalizeDays(days) {
-      if (!Array.isArray(days) || !days.length) {
-        return DEFAULT_ACTIVE_DAYS.slice();
-      }
+      if (!Array.isArray(days) || !days.length) return DEFAULT_ACTIVE_DAYS.slice();
       const set = new Set(days);
       const normalized = ALL_DAYS.filter(d => set.has(d));
       return normalized.length ? normalized : DEFAULT_ACTIVE_DAYS.slice();
     }
 
-    function migrateArmsShoulders(state) {
+    function ensureWeekAndDaysExist(program, weekKey) {
+      if (!program.weeks) program.weeks = makeEmptyWeeks();
+      if (!program.weeks[weekKey]) program.weeks[weekKey] = emptyWeek();
+      ALL_DAYS.forEach(day => {
+        if (!program.weeks[weekKey][day]) program.weeks[weekKey][day] = [];
+      });
+    }
+
+    function computeVolumeForWeek(program, weekKey) {
+      const result = {};
+      muscleGroups.forEach(m => { result[m] = 0; });
+      if (!program.weeks || !program.weeks[weekKey]) return result;
+      const activeDays = normalizeDays(program.days);
+      const weekData = program.weeks[weekKey];
+      activeDays.forEach(day => {
+        (weekData[day] || []).forEach(set => {
+          const m = set.muscle;
+          if (!m) return;
+          if (!(m in result)) result[m] = 0;
+          result[m] += 1;
+        });
+      });
+      return result;
+    }
+
+    function migrateTemplates(state) {
       try {
-        if (window.localStorage.getItem(MIGRATION_KEY) === "1") {
-          return state;
-        }
+        if (window.localStorage.getItem(MIGRATION_KEY) === "1") return state;
       } catch (e) {
         return state;
       }
+      if (!state || !Array.isArray(state.programs)) return state;
 
-      if (!state || !state.programs || !state.programs.length) return state;
+      const findByName = (name) => state.programs.find(p => (p.name || "").trim() === name);
 
-      const programs = state.programs;
-      const hasArms = programs.some(p => p.name === "Arms & Shoulders");
-      if (hasArms) {
-        try { window.localStorage.setItem(MIGRATION_KEY, "1"); } catch (e) {}
-        return state;
+      // Rename old name if it exists
+      const old = findByName("Arms & Shoulders");
+      if (old) old.name = "Arms & Shoulders (5 Days)";
+
+      // Add templates if missing
+      if (!findByName("Arms & Shoulders (5 Days)")) {
+        state.programs.push(deepClone(initialAppState.programs.find(p => p.name === "Arms & Shoulders (5 Days)")));
+      }
+      if (!findByName("Arms & Shoulders (3 Days)")) {
+        state.programs.push(deepClone(initialAppState.programs.find(p => p.name === "Arms & Shoulders (3 Days)")));
       }
 
-      let defaultProg = programs.find(p => p.name === "Default Program") || programs[0];
-      if (!defaultProg) return state;
-
-      const arms = deepClone(defaultProg);
-      arms.id = "prog-arms-" + Date.now().toString(36);
-      arms.name = "Arms & Shoulders";
-      programs.push(arms);
-
-      const clearedWeeks = makeEmptyWeeks();
-      defaultProg.weeks = clearedWeeks;
-      defaultProg.days = normalizeDays(defaultProg.days);
-
-      state.currentProgramId = defaultProg.id;
+      // Normalize structure and ensure completed flags exist
+      state.programs.forEach(p => {
+        p.days = normalizeDays(p.days);
+        if (!p.weeks) p.weeks = makeEmptyWeeks();
+        Object.keys(p.weeks).forEach(wk => {
+          if (!p.weeks[wk]) p.weeks[wk] = emptyWeek();
+          ALL_DAYS.forEach(day => {
+            if (!Array.isArray(p.weeks[wk][day])) p.weeks[wk][day] = [];
+            p.weeks[wk][day].forEach(s => {
+              if (typeof s.completed !== "boolean") s.completed = false;
+            });
+          });
+        });
+      });
 
       try { window.localStorage.setItem(MIGRATION_KEY, "1"); } catch (e) {}
       return state;
@@ -778,32 +643,22 @@
     function loadAppState() {
       try {
         const raw = window.localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-          const cloned = deepClone(initialAppState);
-          return cloned;
-        }
+        if (!raw) return deepClone(initialAppState);
         const parsed = JSON.parse(raw);
-        if (!parsed.programs || !parsed.programs.length) {
-          return deepClone(initialAppState);
-        }
+        if (!parsed.programs || !parsed.programs.length) return deepClone(initialAppState);
         parsed.programs.forEach(p => {
           p.days = normalizeDays(p.days);
-          if (!p.weeks) {
-            p.weeks = makeEmptyWeeks();
-          }
+          if (!p.weeks) p.weeks = makeEmptyWeeks();
         });
-        return migrateArmsShoulders(parsed);
+        return migrateTemplates(parsed);
       } catch (e) {
         return deepClone(initialAppState);
       }
     }
 
     function saveAppState() {
-      try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-      } catch (e) {
-        console.warn("Failed to save app state.", e);
-      }
+      try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(appState)); }
+      catch (e) { console.warn("Failed to save app state.", e); }
     }
 
     function getExercisesForMuscle(muscle) {
@@ -814,57 +669,11 @@
       return appState.programs.find(p => p.id === appState.currentProgramId) || appState.programs[0];
     }
 
-    function ensureWeekAndDaysExist(program, weekKey) {
-      if (!program.weeks) {
-        program.weeks = makeEmptyWeeks();
-      }
-      if (!program.weeks[weekKey]) {
-        program.weeks[weekKey] = emptyWeek();
-      }
-      ALL_DAYS.forEach(day => {
-        if (!program.weeks[weekKey][day]) {
-          program.weeks[weekKey][day] = [];
-        }
-      });
-    }
-
-    function computeVolumeForWeek(program, weekKey) {
-      const result = {};
-      muscleGroups.forEach(m => { result[m] = 0; });
-
-      if (!program.weeks || !program.weeks[weekKey]) return result;
-
-      const activeDays = normalizeDays(program.days);
-      const weekData = program.weeks[weekKey];
-
-      activeDays.forEach(day => {
-        const dayArray = weekData[day] || [];
-        dayArray.forEach(set => {
-          const m = set.muscle;
-          if (!m) return;
-          if (!(m in result)) result[m] = 0;
-          result[m] += 1;
-        });
-      });
-
-      return result;
-    }
-
     function attachClearOnType(input) {
       input.dataset.cleared = "false";
       input.addEventListener("keydown", (e) => {
         if (input.dataset.cleared === "true") return;
-        if (
-          e.key === "ArrowUp" ||
-          e.key === "ArrowDown" ||
-          e.key === "Tab" ||
-          e.key === "Shift" ||
-          e.key === "Control" ||
-          e.key === "Alt" ||
-          e.key === "Meta"
-        ) {
-          return;
-        }
+        if (["ArrowUp","ArrowDown","Tab","Shift","Control","Alt","Meta"].includes(e.key)) return;
         input.value = "";
         input.dataset.cleared = "true";
       });
@@ -891,7 +700,6 @@
     const deleteProgramBtn = document.getElementById("deleteProgramBtn");
 
     const dayToggleRowEl = document.getElementById("dayToggleRow");
-
     const weekSelectEl = document.getElementById("weekSelect");
     const dayTabsEl = document.getElementById("dayTabs");
     const setsTableBodyEl = document.getElementById("setsTableBody");
@@ -924,13 +732,17 @@
         workoutTabBtn.classList.add("active");
       }
     }
-
     settingsTabBtn.addEventListener("click", () => setView("settings"));
     workoutTabBtn.addEventListener("click", () => setView("workout"));
 
     function renderWeekSelects() {
       weekSelectEl.value = currentWeek;
       weekSelectWorkoutEl.value = currentWeek;
+    }
+
+    function renderWorkoutContext() {
+      const program = getCurrentProgram();
+      workoutContextEl.textContent = program ? `${program.name || "Program"} · ${currentWeek} · ${currentDay}` : "";
     }
 
     function renderProgramSelect() {
@@ -952,9 +764,7 @@
       });
 
       const program = getCurrentProgram();
-      if (program) {
-        programNameInputEl.value = program.name || "";
-      }
+      programNameInputEl.value = program?.name || "";
       renderDayToggles();
       renderWorkoutContext();
     }
@@ -968,29 +778,21 @@
       ALL_DAYS.forEach(day => {
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.textContent = day.slice(0, 3);
-        btn.className = "day-toggle-btn";
-        if (activeDays.includes(day)) {
-          btn.classList.add("active");
-        }
+        btn.textContent = day.slice(0,3);
+        btn.className = "day-toggle-btn" + (activeDays.includes(day) ? " active" : "");
         btn.addEventListener("click", () => {
           const isActive = activeDays.includes(day);
           if (isActive) {
-            if (activeDays.length === 1) {
-              return;
-            }
-            const idx = activeDays.indexOf(day);
-            activeDays.splice(idx, 1);
+            if (activeDays.length === 1) return;
+            activeDays.splice(activeDays.indexOf(day), 1);
           } else {
             activeDays.push(day);
             const order = new Map();
-            ALL_DAYS.forEach((d, i) => order.set(d, i));
-            activeDays.sort((a, b) => order.get(a) - order.get(b));
+            ALL_DAYS.forEach((d,i)=>order.set(d,i));
+            activeDays.sort((a,b)=>order.get(a)-order.get(b));
           }
           program.days = activeDays.slice();
-          if (!program.days.includes(currentDay)) {
-            currentDay = program.days[0];
-          }
+          if (!program.days.includes(currentDay)) currentDay = program.days[0];
           saveAppState();
           renderDayToggles();
           renderDayTabs();
@@ -1008,15 +810,14 @@
       if (!program) return;
       const activeDays = normalizeDays(program.days);
       program.days = activeDays;
-      if (!activeDays.includes(currentDay)) {
-        currentDay = activeDays[0];
-      }
+      if (!activeDays.includes(currentDay)) currentDay = activeDays[0];
+
       dayTabsEl.innerHTML = "";
       dayTabsWorkoutEl.innerHTML = "";
       activeDays.forEach(day => {
         const makeBtn = (container) => {
           const btn = document.createElement("button");
-          btn.textContent = day.slice(0, 3);
+          btn.textContent = day.slice(0,3);
           btn.className = "tab" + (day === currentDay ? " active" : "");
           btn.addEventListener("click", () => {
             currentDay = day;
@@ -1039,6 +840,8 @@
 
       setsTableBodyEl.innerHTML = "";
       sets.forEach((set, index) => {
+        if (typeof set.completed !== "boolean") set.completed = false;
+
         const tr = document.createElement("tr");
 
         const tdIndex = document.createElement("td");
@@ -1059,9 +862,7 @@
         muscleSelect.addEventListener("change", () => {
           set.muscle = muscleSelect.value;
           const exList = getExercisesForMuscle(set.muscle);
-          if (!exList.find(e => e.name === set.exercise)) {
-            set.exercise = exList.length ? exList[0].name : "";
-          }
+          if (!exList.find(e => e.name === set.exercise)) set.exercise = exList.length ? exList[0].name : "";
           saveAppState();
           renderSetsTable();
           renderVolumeTable();
@@ -1074,20 +875,13 @@
         tdExercise.className = "exercise-cell";
         const exerciseSelect = document.createElement("select");
         const options = getExercisesForMuscle(set.muscle);
-        if (!options.length && set.exercise) {
+        options.forEach(ex => {
           const opt = document.createElement("option");
-          opt.value = set.exercise;
-          opt.textContent = set.exercise;
+          opt.value = ex.name;
+          opt.textContent = ex.name;
+          if (ex.name === set.exercise) opt.selected = true;
           exerciseSelect.appendChild(opt);
-        } else {
-          options.forEach(ex => {
-            const opt = document.createElement("option");
-            opt.value = ex.name;
-            opt.textContent = ex.name;
-            if (ex.name === set.exercise) opt.selected = true;
-            exerciseSelect.appendChild(opt);
-          });
-        }
+        });
         exerciseSelect.addEventListener("change", () => {
           set.exercise = exerciseSelect.value;
           saveAppState();
@@ -1112,7 +906,6 @@
           set.weight = v === "" ? null : Number(v);
           saveAppState();
           renderWorkoutTable();
-          renderVolumeTable();
         });
         tdWeight.appendChild(weightInput);
         tr.appendChild(tdWeight);
@@ -1132,7 +925,6 @@
           set.reps = v === "" ? null : Number(v);
           saveAppState();
           renderWorkoutTable();
-          renderVolumeTable();
         });
         tdReps.appendChild(repsInput);
         tr.appendChild(tdReps);
@@ -1166,69 +958,31 @@
         const diff = actual - ideal;
 
         const tr = document.createElement("tr");
-
-        const tdMuscle = document.createElement("td");
-        tdMuscle.textContent = muscle;
-        tr.appendChild(tdMuscle);
-
-        const tdIdeal = document.createElement("td");
-        tdIdeal.textContent = ideal;
-        tr.appendChild(tdIdeal);
-
-        const tdActual = document.createElement("td");
-        tdActual.textContent = actual;
-        tr.appendChild(tdActual);
-
-        const tdDiff = document.createElement("td");
-        tdDiff.textContent = diff > 0 ? "+" + diff : diff;
-        tr.appendChild(tdDiff);
-
-        const tdStatus = document.createElement("td");
-        const pill = document.createElement("span");
-        pill.className = "pill";
-        if (actual === ideal) {
-          pill.classList.add("ok");
-          pill.textContent = "On target";
-        } else if (actual > ideal) {
-          pill.classList.add("high");
-          pill.textContent = "High";
-        } else {
-          pill.classList.add("low");
-          pill.textContent = "Low";
-        }
-        tdStatus.appendChild(pill);
-        tr.appendChild(tdStatus);
-
+        tr.innerHTML = `
+          <td>${muscle}</td>
+          <td>${ideal}</td>
+          <td>${actual}</td>
+          <td>${diff > 0 ? "+"+diff : diff}</td>
+          <td><span class="pill ${actual===ideal ? "ok" : (actual>ideal ? "high":"low")}">
+            ${actual===ideal ? "On target" : (actual>ideal ? "High":"Low")}
+          </span></td>
+        `;
         volumeTableBodyEl.appendChild(tr);
       });
     }
 
-    function renderWorkoutContext() {
-      const program = getCurrentProgram();
-      if (!program) {
-        workoutContextEl.textContent = "";
-        return;
-      }
-      workoutContextEl.textContent = `${program.name || "Program"} · ${currentWeek} · ${currentDay}`;
-    }
-
     function renderWorkoutTable() {
       const program = getCurrentProgram();
-      if (!program) {
-        workoutTableBodyEl.innerHTML = "";
-        return;
-      }
+      if (!program) { workoutTableBodyEl.innerHTML = ""; return; }
       ensureWeekAndDaysExist(program, currentWeek);
       const sets = program.weeks[currentWeek][currentDay];
 
       workoutTableBodyEl.innerHTML = "";
       sets.forEach((set) => {
-        const tr = document.createElement("tr");
+        if (typeof set.completed !== "boolean") set.completed = false;
 
-        // Ensure completed flag exists
-        if (set.completed) {
-          tr.classList.add("set-completed");
-        }
+        const tr = document.createElement("tr");
+        if (set.completed) tr.classList.add("set-completed");
 
         const tdExercise = document.createElement("td");
         tdExercise.className = "exercise-cell";
@@ -1271,18 +1025,12 @@
         tdReps.appendChild(repsInput);
         tr.appendChild(tdReps);
 
-        // Tap-to-complete behavior: ignore clicks on inputs/buttons
         tr.addEventListener("click", (e) => {
           const tag = e.target.tagName;
-          if (tag === "INPUT" || tag === "SELECT" || tag === "BUTTON") {
-            return;
-          }
+          if (tag === "INPUT" || tag === "SELECT" || tag === "BUTTON") return;
           set.completed = !set.completed;
-          if (set.completed) {
-            tr.classList.add("set-completed");
-          } else {
-            tr.classList.remove("set-completed");
-          }
+          if (set.completed) tr.classList.add("set-completed");
+          else tr.classList.remove("set-completed");
           saveAppState();
         });
 
@@ -1294,13 +1042,8 @@
       appState.currentProgramId = newId;
       saveAppState();
       const program = getCurrentProgram();
-      if (program && !program.weeks) {
-        program.weeks = makeEmptyWeeks();
-      }
-      const activeDays = normalizeDays(getCurrentProgram().days);
-      if (!activeDays.includes(currentDay)) {
-        currentDay = activeDays[0];
-      }
+      const activeDays = normalizeDays(program.days);
+      if (!activeDays.includes(currentDay)) currentDay = activeDays[0];
       renderProgramSelect();
       renderWeekSelects();
       renderDayTabs();
@@ -1313,9 +1056,7 @@
     function handleWeekChange(newWeek) {
       currentWeek = newWeek;
       const program = getCurrentProgram();
-      if (program) {
-        ensureWeekAndDaysExist(program, currentWeek);
-      }
+      if (program) ensureWeekAndDaysExist(program, currentWeek);
       saveAppState();
       renderWeekSelects();
       renderSetsTable();
@@ -1324,13 +1065,8 @@
       renderWorkoutTable();
     }
 
-    programSelectEl.addEventListener("change", () => {
-      handleProgramChange(programSelectEl.value);
-    });
-
-    programSelectWorkoutEl.addEventListener("change", () => {
-      handleProgramChange(programSelectWorkoutEl.value);
-    });
+    programSelectEl.addEventListener("change", () => handleProgramChange(programSelectEl.value));
+    programSelectWorkoutEl.addEventListener("change", () => handleProgramChange(programSelectWorkoutEl.value));
 
     programNameInputEl.addEventListener("input", () => {
       const program = getCurrentProgram();
@@ -1343,21 +1079,17 @@
 
     newProgramBtn.addEventListener("click", () => {
       const baseProgram = getCurrentProgram();
-      const cloneWeeks = baseProgram && baseProgram.weeks
-        ? deepClone(baseProgram.weeks)
-        : makeEmptyWeeks();
-
+      const cloneWeeks = baseProgram?.weeks ? deepClone(baseProgram.weeks) : makeEmptyWeeks();
       const newId = "prog-" + Date.now().toString(36);
-      const newProgram = {
+      appState.programs.push({
         id: newId,
         name: (baseProgram?.name || "Program") + " copy",
-        days: baseProgram?.days ? baseProgram.days.slice() : DEFAULT_ACTIVE_DAYS.slice(),
+        days: (baseProgram?.days || DEFAULT_ACTIVE_DAYS).slice(),
         weeks: cloneWeeks
-      };
-      appState.programs.push(newProgram);
+      });
       handleProgramChange(newId);
       currentWeek = "Week 1";
-      currentDay = normalizeDays(newProgram.days)[0];
+      currentDay = normalizeDays(getCurrentProgram().days)[0];
       renderWeekSelects();
     });
 
@@ -1385,13 +1117,8 @@
       renderWorkoutTable();
     });
 
-    weekSelectEl.addEventListener("change", () => {
-      handleWeekChange(weekSelectEl.value);
-    });
-
-    weekSelectWorkoutEl.addEventListener("change", () => {
-      handleWeekChange(weekSelectWorkoutEl.value);
-    });
+    weekSelectEl.addEventListener("change", () => handleWeekChange(weekSelectEl.value));
+    weekSelectWorkoutEl.addEventListener("change", () => handleWeekChange(weekSelectWorkoutEl.value));
 
     addSetBtn.addEventListener("click", () => {
       const program = getCurrentProgram();
@@ -1403,16 +1130,10 @@
         muscle = sets[sets.length - 1].muscle || muscle;
         exerciseName = sets[sets.length - 1].exercise || "";
       } else {
-        const chestList = getExercisesForMuscle(muscle);
-        if (chestList.length) exerciseName = chestList[0].name;
+        const list = getExercisesForMuscle(muscle);
+        if (list.length) exerciseName = list[0].name;
       }
-      sets.push({
-        muscle,
-        exercise: exerciseName,
-        weight: null,
-        reps: null,
-        completed: false
-      });
+      sets.push({ muscle, exercise: exerciseName, weight: null, reps: null, completed: false });
       saveAppState();
       renderSetsTable();
       renderVolumeTable();
@@ -1421,15 +1142,11 @@
 
     function init() {
       const program = getCurrentProgram();
-      if (!program) {
-        appState = deepClone(initialAppState);
-      } else {
-        ensureWeekAndDaysExist(program, currentWeek);
-        program.days = normalizeDays(program.days);
-        if (!program.days.includes(currentDay)) {
-          currentDay = program.days[0];
-        }
-      }
+      if (!program) appState = deepClone(initialAppState);
+      ensureWeekAndDaysExist(getCurrentProgram(), currentWeek);
+      const activeDays = normalizeDays(getCurrentProgram().days);
+      if (!activeDays.includes(currentDay)) currentDay = activeDays[0];
+
       renderProgramSelect();
       renderWeekSelects();
       renderDayTabs();
